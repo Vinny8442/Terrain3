@@ -1,0 +1,7 @@
+﻿{
+  "name": "Terrain.Gui",
+  "references": [
+    "Terrain.Core",
+    "Terrain.Game"
+  ]
+}

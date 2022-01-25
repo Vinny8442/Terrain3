@@ -1,0 +1,13 @@
+syntax: glob
+Library/
+Temp/
+*.csproj
+.vs/
+*.DotSettings.user
+*.sln
+*.orig
+*.orig.meta
+.idea/*
+Assets/TextMesh Pro/*
+obj/*
+Logs/*
