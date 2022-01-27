@@ -1,5 +1,5 @@
 ﻿{
-  "name": "Terrain.Gui",
+  "name": "Terrain.Scene.Ground",
   "references": [
     "Terrain.Core",
     "Terrain.Game"

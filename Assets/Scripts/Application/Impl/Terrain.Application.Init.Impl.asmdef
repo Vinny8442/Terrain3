@@ -1,0 +1,12 @@
+﻿{
+  "name": "Terrain.Application.Init.Impl",
+  "references": [
+    "ThirdParty.Zenject",
+    "Unity.TextMeshPro",
+    "Terrain.Application.Init",
+    "Terrain.Game",
+    "Terrain.Core",
+    "Terrain.Gui",
+    "Terrain.Scene.Ground"
+  ]
+}

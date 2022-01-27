@@ -1,0 +1,8 @@
+﻿{
+  "name": "Terrain.Scene.Ground.UI",
+  "references": [
+    "Terrain.Core",
+    "Terrain.Game",
+    "Terrain.Application.Init"
+  ]
+}

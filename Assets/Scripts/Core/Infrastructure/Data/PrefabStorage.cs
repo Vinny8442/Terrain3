@@ -35,13 +35,8 @@ namespace Core
 			var prefab = Load(name);
 			var gameObject =  GameObject.Instantiate(prefab, parent);
 			var component = gameObject.GetComponent<T>();
-			var injectableComponents = gameObject.GetComponentsInChildren<IInjectable>();
-			foreach (IInjectable injectable in injectableComponents)
-			{
-				_container.Inject(injectable);
-			}
 			
-			component.Init(); 
+			InjectAndInit( gameObject ); 
 
 			return component;
 		}
@@ -51,6 +46,21 @@ namespace Core
 			T result = InstantiateAs<T>(name, parent);
 			result.Init(data);
 			return result;
+		}
+
+		public void InjectAndInit( GameObject gameObject )
+		{
+			var injectableComponents = gameObject.GetComponentsInChildren<IInjectable>();
+			foreach (IInjectable injectable in injectableComponents)
+			{
+				_container.Inject(injectable);
+			}
+
+			var initableComponents = gameObject.GetComponentsInChildren<IInitable>();
+			foreach ( IInitable initable in initableComponents )
+			{
+				initable.Init();
+			}
 		}
 	}
 }

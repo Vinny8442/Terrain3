@@ -8,6 +8,7 @@ namespace Application
 		public static DiContainer EditorContainer;
 		
 		[SerializeField] private Transform _root;
+		[SerializeField] private RectTransform _uiRoot;
 		private void Start()
 		{
 			var container = new DiContainer();
@@ -18,7 +19,7 @@ namespace Application
 
 			var startCommand = container.Instantiate<SequentCommand>();
 			startCommand.Add(container.Instantiate<CreateWorldCommand>(new []{_root}));
-			startCommand.Add(container.Instantiate<CreateUICommand>(new []{_root}));
+			startCommand.Add(container.Instantiate<CreateUICommand>(new []{_uiRoot}));
 			startCommand.Run().ThrowException();
 
 			EditorContainer = container;
