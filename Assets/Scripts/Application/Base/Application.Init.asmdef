@@ -1,8 +1,8 @@
 ﻿{
-  "name": "Terrain.Application.Init",
+  "name": "Application.Init",
   "references": [
     "ThirdParty.Zenject",
     "Terrain.Game",
-    "Terrain.Core"
+    "Application.Core"
   ]
 }

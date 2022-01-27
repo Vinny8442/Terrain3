@@ -1,4 +1,4 @@
 ﻿{
-  "name": "Terrain.Core",
+  "name": "Application.Core",
   "references": ["ThirdParty.Zenject"]
 }

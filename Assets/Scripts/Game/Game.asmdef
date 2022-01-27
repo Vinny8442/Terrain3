@@ -1,7 +1,0 @@
-﻿{
-  "name": "Terrain.Game",
-  "references": [
-    "Terrain.Core",
-    "ThirdParty.Zenject"
-  ]
-}

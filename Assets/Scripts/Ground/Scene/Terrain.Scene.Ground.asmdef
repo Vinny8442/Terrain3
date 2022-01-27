@@ -1,7 +1,7 @@
 ﻿{
   "name": "Terrain.Scene.Ground",
   "references": [
-    "Terrain.Core",
-    "Terrain.Game"
+    "Application.Core",
+    "Terrain.Scene.Ground.Core"
   ]
 }

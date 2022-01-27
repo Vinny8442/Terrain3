@@ -1,4 +1,4 @@
 ﻿{
   "name": "Other.Sphere",
-  "references": ["Terrain.Game"]
+  "references": ["Terrain.Scene.Ground.Core"]
 }

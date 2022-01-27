@@ -49,7 +49,7 @@ namespace Game.Sector
 			Index2 newCenterSector = GetSectorIndex( position.x, position.z );
 			if ( newCenterSector != _centerSectorIndex )
 			{
-				UpdateCenterIndex( newCenterSector ).ThrowException( );
+				UpdateCenterIndex( newCenterSector ).ThrowException( ); 
 			}
 		}
 

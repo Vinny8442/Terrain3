@@ -3,10 +3,9 @@
   "references": [
     "ThirdParty.Zenject",
     "Unity.TextMeshPro",
-    "Terrain.Application.Init",
-    "Terrain.Game",
-    "Terrain.Core",
-    "Terrain.Gui",
+    "Application.Core",
+    "Application.Init",
+    "Terrain.Scene.Ground.Core",
     "Terrain.Scene.Ground"
   ]
 }

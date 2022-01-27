@@ -1,0 +1,7 @@
+﻿{
+  "name": "Terrain.Scene.Ground.Core",
+  "references": [
+    "Application.Core",
+    "ThirdParty.Zenject"
+  ]
+}
