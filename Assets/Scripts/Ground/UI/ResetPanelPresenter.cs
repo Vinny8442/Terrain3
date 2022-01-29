@@ -1,4 +1,5 @@
-﻿using Application;
+﻿using System;
+using Application;
 using Core;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,9 +15,18 @@ namespace Gui.Game.UI
 		[Inject]
 		private IResetService _resetService;
 
-		public void Init()
+		private void Start()
 		{
 			_resetButton.onClick.AddListener( OnResetClick );
+		}
+
+		public void Init()
+		{
+			
+		}
+
+		public void UnInit()
+		{
 		}
 
 		private void OnResetClick()

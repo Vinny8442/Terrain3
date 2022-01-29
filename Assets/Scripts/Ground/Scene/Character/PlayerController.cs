@@ -24,10 +24,9 @@ namespace Terrain.Character
 		private bool _grounded;
 		private bool _positionUpdated;
 
-		public void Init()
-		{
-			
-		}
+		public void Init() {}
+
+		public void UnInit() {}
 
 		private void Update()
 		{

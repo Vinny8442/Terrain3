@@ -1,12 +1,19 @@
-﻿using Application;
+﻿using System;
+using Application;
 
 namespace Core
 {
 	public class ResetService : IResetService
 	{
+		public ResetService()
+		{
+		}
+		
 		public void Reset()
 		{
-			throw new System.NotImplementedException();
+			OnResetRequested.Invoke();
 		}
+		
+		public event Action OnResetRequested = delegate {}; 
 	}
 }

@@ -26,6 +26,10 @@ namespace Gui.Game.Ground
 			// Density = 0;
 		}
 
+		public void UnInit()
+		{
+		}
+
 		public void SetInteractable(bool value)
 		{
 			Interactable = value;

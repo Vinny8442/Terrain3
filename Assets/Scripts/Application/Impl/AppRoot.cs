@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Linq;
+using Core;
+using UnityEngine;
 using Zenject;
 
 namespace Application
@@ -9,20 +12,60 @@ namespace Application
 		
 		[SerializeField] private Transform _root;
 		[SerializeField] private RectTransform _uiRoot;
+		private DiContainer _container;
+
 		private void Start()
 		{
-			var container = new DiContainer();
+			Install();
+			StartLoading();
+
+			EditorContainer = _container;
+		}
+
+		private void Install()
+		{
+			_container = new DiContainer();
 			var installer = new RootInstaller();
-			installer.Install(container);
+			installer.Install(_container);
 			
-			container.ResolveRoots();
+			_container.ResolveRoots();
+			
+			_container.Resolve<IResetService>().OnResetRequested += ClearAndReinstall;
+		}
 
-			var startCommand = container.Instantiate<SequentCommand>();
-			startCommand.Add(container.Instantiate<CreateWorldCommand>(new []{_root}));
-			startCommand.Add(container.Instantiate<CreateUICommand>(new []{_uiRoot}));
+		private void StartLoading()
+		{
+			var startCommand = _container.Instantiate<SequentCommand>();
+			startCommand.Add(_container.Instantiate<CreateWorldCommand>(new []{_root}));
+			startCommand.Add(_container.Instantiate<CreateUICommand>(new []{_uiRoot}));
 			startCommand.Run().ThrowException();
+		}
 
-			EditorContainer = container;
+		private void ClearAndReinstall()
+		{
+			Clear();
+			Install();
+			StartLoading();
+		}
+
+		private void Clear()
+		{
+			foreach ( IInitable initable in _root.GetComponentsInChildren<IInitable>().Concat( _uiRoot.GetComponentsInChildren<IInitable>() ) )
+			{
+				try
+				{
+					initable.UnInit();
+				}
+				catch ( Exception e )
+				{
+					Debug.LogError( $"Clear and reinstall:\n{e}" );
+				}
+			}
+
+			foreach ( Transform child in _root.transform )
+			{
+				Destroy( child.gameObject );
+			}
 		}
 	}
 }

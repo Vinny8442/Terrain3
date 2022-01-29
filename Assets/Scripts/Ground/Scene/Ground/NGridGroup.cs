@@ -40,6 +40,11 @@ namespace Gui.Game.Ground
             SetSubComponentsPosition( );
         }
 
+        public void UnInit()
+        {
+            _sectorControl.OnDataLoaded -= HandleCenterChanged;
+        }
+
         private void HandleCenterChanged( Index2 center )
         {
             HandleCenterChangedInternal( center ).ThrowException( );
