@@ -9,14 +9,14 @@ namespace Core.AsyncTask
 		private Exception _exception;
 		protected Action _onCompleted = delegate { };
 		private Action<Exception> _onFailed = delegate { };
-		private bool _completeOnFail;
+		private readonly bool _completeOnFail;
 
 		public AsyncTask(bool completeOnFail = false)
 		{
 			_completeOnFail = completeOnFail;
 		}
 
-		public IAsyncTask Then(Func<IAsyncTask> nextAction)
+		public virtual IAsyncTask Then(Func<IAsyncTask> nextAction)
 		{
 			return new ContinuationFromFunc(nextAction, this);
 		}

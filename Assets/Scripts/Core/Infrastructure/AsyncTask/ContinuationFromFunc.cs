@@ -5,8 +5,7 @@ namespace Core.AsyncTask
 	public class ContinuationFromFunc : AsyncTask
 	{
 		private IAsyncTask _controlTask;
-		private Func<IAsyncTask> _nextAction;
-		private Action _onComplete;
+		private readonly Func<IAsyncTask> _nextAction;
 
 		public ContinuationFromFunc(Func<IAsyncTask> nextAction, IAsyncTask controlTask)
 		{
@@ -17,7 +16,7 @@ namespace Core.AsyncTask
 			_controlTask.WhenFailed(Fail);
 		}
 
-		public IAsyncTask Then(Func<IAsyncTask> nextAction)
+		public override IAsyncTask Then(Func<IAsyncTask> nextAction)
 		{
 			return new ContinuationFromFunc(nextAction, this);
 		}
@@ -32,6 +31,10 @@ namespace Core.AsyncTask
 				{
 					nextTask.WhenCompleted(Complete);
 					nextTask.WhenFailed(Fail);
+				}
+				else
+				{
+					Complete();
 				}
 			}
 			catch (Exception e)
