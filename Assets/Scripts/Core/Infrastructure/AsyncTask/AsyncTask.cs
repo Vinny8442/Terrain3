@@ -52,13 +52,15 @@ namespace Core.AsyncTask
 
 		public bool IsCompleted { get; protected set; }
 		public bool IsFailed => _exception != null;
-		public void ThrowException()
+		public IAsyncTask ThrowException()
 		{
 			if (_exception != null)
 			{
 				// throw _exception;
 				ExceptionDispatchInfo.Capture(_exception).Throw();
 			}
+
+			return this;
 		}
 
 		public virtual void Fail(Exception exception)

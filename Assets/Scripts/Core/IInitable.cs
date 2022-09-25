@@ -1,6 +1,6 @@
 ﻿namespace Core
 {
-	public interface IInitable
+	public interface IInitable 
 	{
 		void Init();
 		void UnInit();

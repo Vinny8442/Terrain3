@@ -25,7 +25,7 @@ namespace Jobs
 			Log("Start::done");
 		}
 
-		private async IAsyncTask<float> PrintResult(int result)
+		private async IAsyncTask<float> PrintResult(int result) 
 		{
 			Log($"RESULT: {result}");
 			return 123.123f;

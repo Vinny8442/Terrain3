@@ -13,11 +13,6 @@ namespace Application
 			container.Bind<PrefabStorage>().AsSingle().Lazy();
 
 			container.BindInterfacesTo<ResetService>().AsSingle().Lazy();
-			container.BindInterfacesTo<HeightDataSource>().AsSingle().Lazy();
-			container.Bind<SectorDataProvider>().AsSingle().Lazy();
-			container.Bind<SectorControlService>().AsSingle().Lazy();
-			
-			
 		}
 	}
 }

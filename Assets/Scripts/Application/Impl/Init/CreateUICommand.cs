@@ -1,6 +1,7 @@
 ﻿using Core;
 using Core.AsyncTask;
 using UnityEngine;
+using Application.Init;
 
 namespace Application
 {

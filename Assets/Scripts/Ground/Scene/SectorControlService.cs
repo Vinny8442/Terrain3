@@ -100,12 +100,12 @@ namespace Game.Sector
 			return new Index2( (int)( x / _sectorSize + Math.Sign( x ) * 0.5f ), (int)( y / _sectorSize + Math.Sign( y ) * 0.5f ) );
 		}
 
-		public void EditorRebuild( )
-		{
-			// UnInit();
-			Init( );
-			OnDataLoaded?.Invoke( default );
-		}
+		// public void EditorRebuild( )
+		// {
+		// 	// UnInit();
+		// 	Init( );
+		// 	OnDataLoaded?.Invoke( default );
+		// }
 
 		public void EditorMoveCenter( Index2 delta )
 		{

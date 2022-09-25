@@ -74,7 +74,6 @@ namespace Gui.Game.Ground
                     var sectorView = cache.Dequeue( );
                     sectorView.SetIndex( sectorIndex );
                 }
-                // UniversalRenderPipeline
             }
 
             var viewsToRebuild = new List<SectorView>( );
@@ -94,10 +93,10 @@ namespace Gui.Game.Ground
             transform.localPosition = new Vector3( _centerSector.x * 100, 0, _centerSector.y * 100 );
             SetSubComponentsPosition( );
 
-            var timer = Stopwatch.StartNew( );
+            // var timer = Stopwatch.StartNew( );
             // Debug.Log($"Start rebuilding {viewsToRebuild.Count} sectors");
             await new CoroutineTask( this, RebuildSectors( viewsToRebuild ), CancellationToken.None );
-            await new CoroutineTask( this, CoroutineTest( ), CancellationToken.None );
+            // await new CoroutineTask( this, CoroutineTest( ), CancellationToken.None );
             // Debug.Log($"Rebuild {timer.ElapsedMilliseconds}");
             var meshBaker = new MeshBaker( );
             await meshBaker.Bake( viewsToRebuild.Where( s => s.Interactable ) );
@@ -107,17 +106,17 @@ namespace Gui.Game.Ground
         }
 
 
-        private IEnumerator CoroutineTest( )
-        {
-            for ( int i = 0; i < 5; i++ )
-            {
-                yield return null;
-            }
+        // private IEnumerator CoroutineTest( )
+        // {
+        //     for ( int i = 0; i < 5; i++ )
+        //     {
+        //         yield return null;
+        //     }
+        //
+        //     yield return null;
+        // }
 
-            yield return null;
-        }
-
-        private IEnumerator RebuildSectors( List<SectorView> sectors )
+        private static IEnumerator RebuildSectors( List<SectorView> sectors )
         {
             sectors.Sort( ( a, b ) => b.Density.CompareTo( a.Density ) );
             var timer = Stopwatch.StartNew( );

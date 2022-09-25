@@ -13,7 +13,7 @@ namespace Core.AsyncTask
 		IAsyncTask WhenFailed(Action<Exception> onFailed);
 		bool IsCompleted { get; }
 		bool IsFailed { get; }
-		void ThrowException();
+		IAsyncTask ThrowException();
 	}
 	
 	[AsyncMethodBuilder(typeof(MyAsyncTaskMethodBuilder<>))]
@@ -27,7 +27,7 @@ namespace Core.AsyncTask
 		// IAsyncTask GetTask();
 	}
 	
-	public static class AsyncTaskAwaiterExtenstions
+	public static class AsyncTaskAwaiterExtensions
 	{
 		public static AsyncTaskAwaiter GetAwaiter( this IAsyncTask task )
 		{

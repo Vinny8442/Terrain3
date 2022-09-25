@@ -5,6 +5,7 @@ using Game.Sector;
 using Gui.Game.Ground;
 using Terrain.Character;
 using UnityEngine;
+using Application.Init;
 
 namespace Application
 {
@@ -15,7 +16,7 @@ namespace Application
 
 		private Transform _root;
 
-		public CreateWorldCommand(SettingsStorage settings, PrefabStorage prefabStorage, SectorControlService sectorControl, IHeightSource groundSource, Transform root)
+		public CreateWorldCommand(SettingsStorage settings, PrefabStorage prefabStorage, SectorControlService sectorControl, Transform root)
 		{
 			_sectorControl = sectorControl;
 			_prefabStorage = prefabStorage;
@@ -32,6 +33,6 @@ namespace Application
 			Completed = true;
 		}
 
-		public bool Completed { get; private set; } = false;
+		public bool Completed { get; private set; } = false; 
 	}
 }

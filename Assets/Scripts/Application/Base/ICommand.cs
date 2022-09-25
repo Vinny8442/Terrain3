@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Core;
 using Core.AsyncTask;
 
-namespace Application
+namespace Application.Init
 {
 	public interface ICommand
 	{
@@ -33,7 +33,7 @@ namespace Application
 			{
 				_running = true;
 				_task = new AsyncTask(true);
-				RunNext();
+				RunNext();  
 			}
 
 			return _task;
