@@ -13,7 +13,7 @@ namespace Core.Infrastructure.AsyncTask
 		{
 			_nextAction = nextAction;
 			_prevTask = prevTask;
-			
+
 			_prevTask.WhenCompleted(OnControlTaskCompleted);
 			_prevTask.WhenFailed(Fail);
 		}

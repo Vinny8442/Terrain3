@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Core.AsyncTask;
 using Core.Infrastructure;
@@ -9,75 +8,74 @@ using Zenject;
 
 namespace Application.Init
 {
-    public class SceneLoader
-    {
-        public enum Scenes : int
-        {
-            BasePreloader = 1,
-            Terrain = 2,
-        }
-        
-        private bool _isBusy = false;
-        private AsyncTask _loadingTask = null;
-        private Scenes? _sceneBeingLoaded = null;
-        private Scene? _currentScene = null;
-        private readonly DiContainer _container;
-        private readonly Dictionary<Scenes, Scenes> _uiScenes = null;
+	public class SceneLoader
+	{
+		private int _loaderSceneIndex;
+		private AsyncTask _loadingTask = null;
+		private int? _sceneBeingLoaded = null;
+		private Scene? _currentScene = null;
 
-        public bool IsBusy => _loadingTask != null;
-        public IAsyncTask Loading => _loadingTask;
+		private readonly DiContainer _container;
+		// private readonly Dictionary<Scenes, Scenes> _uiScenes = null;
 
-        public SceneLoader(DiContainer container)
-        {
-            _container = container;
-        }
+		public bool IsBusy => _loadingTask != null;
+		public IAsyncTask Loading => _loadingTask;
 
-        public IAsyncTask Load(Scenes scene)
-        {
-            if (_loadingTask != null)
-            {
-                throw new Exception("SceneLoader is busy");
-            }
-            
-            UnloadCurrentScene();
+		public SceneLoader(DiContainer container, int loaderSceneIndex)
+		{
+			_loaderSceneIndex = loaderSceneIndex;
+			_container = container;
+		}
 
-            LoadNewScene(scene);
-            
-            return _loadingTask;
-        }
+		public IAsyncTask Load(int scene)
+		{
+			if (_loadingTask != null)
+			{
+				throw new Exception("SceneLoader is busy");
+			}
 
-        private void _handleSceneLoadingCompleted(AsyncOperation operation)
-        {
-            var currentLoading = _loadingTask;
-            _loadingTask = null;
+			UnloadCurrentScene();
 
-            _currentScene = SceneManager.GetSceneByBuildIndex((int) _sceneBeingLoaded);
-            var gameObjects = _currentScene?.GetRootGameObjects();
-            gameObjects?.
-                SelectMany(o => o.GetComponentsInChildren<ISceneInstaller>()).
-                ForEach(installer => installer.Install(_container));
-                
-            currentLoading.Complete();
-        }
+			LoadNewScene(scene);
 
-        private void UnloadCurrentScene()
-        {
-            if (_currentScene.HasValue)
-            {
-                var gameObjects = _currentScene.Value.GetRootGameObjects();
-                gameObjects?.
-                    SelectMany(o => o.GetComponentsInChildren<ISceneInstaller>()).
-                    ForEach(installer => installer.Install(_container));
-            }
-        }
+			return _loadingTask;
+		}
 
-        private void LoadNewScene(Scenes scene)
-        {
-            var operation = SceneManager.LoadSceneAsync((int) scene, LoadSceneMode.Additive);
-            _sceneBeingLoaded = scene;
-            operation.completed += _handleSceneLoadingCompleted;
-            _loadingTask = new AsyncTask();
-        }
-        
-    }
+		private void _handleSceneLoadingCompleted(AsyncOperation operation)
+		{
+			var currentLoading = _loadingTask;
+			_loadingTask = null;
+
+			_currentScene = SceneManager.GetSceneByBuildIndex(_sceneBeingLoaded.Value);
+			var gameObjects = _currentScene?.GetRootGameObjects();
+			gameObjects?.SelectMany(o => o.GetComponentsInChildren<ISceneInstaller>())
+				.ForEach(installer => installer.Install(_container));
+
+			currentLoading.Complete();
+		}
+
+		private void UnloadCurrentScene()
+		{
+			if (_currentScene.HasValue)
+			{
+				var gameObjects = _currentScene.Value.GetRootGameObjects();
+				gameObjects?.SelectMany(o => o.GetComponentsInChildren<ISceneInstaller>())
+					.ForEach(installer => installer.Uninstall());
+				_currentScene = null;
+			}
+		}
+
+		private void LoadNewScene(int scene)
+		{
+			var operation = SceneManager.LoadSceneAsync((int) scene, LoadSceneMode.Additive);
+			_sceneBeingLoaded = scene;
+			operation.completed += _handleSceneLoadingCompleted;
+			_loadingTask = new AsyncTask();
+		}
+
+		public void Clear()
+		{
+			UnloadCurrentScene();
+		}
+	}
 }

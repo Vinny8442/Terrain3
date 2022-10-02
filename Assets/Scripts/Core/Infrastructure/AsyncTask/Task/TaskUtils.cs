@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,7 +8,7 @@ namespace Core.AsyncTask
 	public class TaskUtils
 	{
 		private static AsyncTask _completedTask;
-		
+
 		public static IAsyncTask CompletedTask
 		{
 			get
@@ -24,7 +22,7 @@ namespace Core.AsyncTask
 				return _completedTask;
 			}
 		}
-		
+
 		public static IAsyncTask WaitAll(IEnumerable<IAsyncTask> tasks, CancellationToken token)
 		{
 			// System.Threading.Tasks.Task.Run(async () => await WaitAllInternal(tasks));
@@ -40,11 +38,11 @@ namespace Core.AsyncTask
 			}, token);
 		}
 
-		public static async IAsyncTask<IEnumerable<TResult>> WaitAll<TResult>(IEnumerable<IAsyncTask<TResult>> tasks, CancellationToken token)
+		public static async IAsyncTask<IEnumerable<TResult>> WaitAll<TResult>(IEnumerable<IAsyncTask<TResult>> tasks,
+			CancellationToken token)
 		{
 			await WaitAll(tasks.Select(t => t as IAsyncTask), token);
 			return tasks.Where(t => t.IsCompleted).Select(t => t.Result);
 		}
 	}
-
 }

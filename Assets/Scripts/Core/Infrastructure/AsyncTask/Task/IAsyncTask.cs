@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using Core.Infrastructure.AsyncTask;
 
 namespace Core.AsyncTask
 {
@@ -15,29 +13,28 @@ namespace Core.AsyncTask
 		bool IsFailed { get; }
 		IAsyncTask ThrowException();
 	}
-	
+
 	[AsyncMethodBuilder(typeof(MyAsyncTaskMethodBuilder<>))]
 	public interface IAsyncTask<TResult> : IAsyncTask
 	{
 		IAsyncTask WhenCompleted(Action<TResult> onCompleted);
 		IAsyncTask Then(Func<TResult, IAsyncTask> nextAction);
-		
+
 		TResult Result { get; }
 
 		// IAsyncTask GetTask();
 	}
-	
+
 	public static class AsyncTaskAwaiterExtensions
 	{
-		public static AsyncTaskAwaiter GetAwaiter( this IAsyncTask task )
+		public static AsyncTaskAwaiter GetAwaiter(this IAsyncTask task)
 		{
-			return new AsyncTaskAwaiter( task );
+			return new AsyncTaskAwaiter(task);
 		}
 
-		public static AsyncTaskAwaiter< T > GetAwaiter< T >( this IAsyncTask< T > task )
+		public static AsyncTaskAwaiter<T> GetAwaiter<T>(this IAsyncTask<T> task)
 		{
-			return new AsyncTaskAwaiter< T >( task );
+			return new AsyncTaskAwaiter<T>(task);
 		}
 	}
-	
 }

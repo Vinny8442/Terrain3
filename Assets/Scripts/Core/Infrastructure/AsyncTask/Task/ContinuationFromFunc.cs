@@ -11,7 +11,7 @@ namespace Core.AsyncTask
 		{
 			_nextAction = nextAction;
 			_controlTask = controlTask;
-			
+
 			_controlTask.WhenCompleted(OnControlTaskCompleted);
 			_controlTask.WhenFailed(Fail);
 		}

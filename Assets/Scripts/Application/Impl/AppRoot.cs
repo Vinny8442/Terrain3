@@ -1,15 +1,19 @@
-﻿using System;
-using System.Linq;
-using Core;
+﻿using Application.Init;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Zenject;
-using Application.Init;
 
 namespace Application
 {
 	public class AppRoot : MonoBehaviour
 	{
+		private const int BaseLoaderSceneIndex = 1;
+		private const int TerrainSceneIndex = 2;
+
 		public static DiContainer EditorContainer;
+
+		[SerializeField] private GameObject _monobehUpdater;
+
 		private DiContainer _container;
 		private SceneLoader _sceneLoader;
 
@@ -23,15 +27,15 @@ namespace Application
 		private void Install()
 		{
 			_container = new DiContainer();
-			_sceneLoader = new SceneLoader(_container);
-			
+			_sceneLoader = new SceneLoader(_container, BaseLoaderSceneIndex);
+
 			var installer = new RootInstaller();
-			installer.Install(_container);
-			
+			installer.Install(_container, _monobehUpdater);
+
 			_container.ResolveRoots();
 			_container.Resolve<IResetService>().OnResetRequested += ClearAndReinstall;
 
-			_sceneLoader.Load(SceneLoader.Scenes.Terrain);
+			_sceneLoader.Load(TerrainSceneIndex);
 		}
 
 		private void ClearAndReinstall()
@@ -42,7 +46,7 @@ namespace Application
 
 		private void Clear()
 		{
-			
+			_sceneLoader.Clear();
 		}
 	}
 }

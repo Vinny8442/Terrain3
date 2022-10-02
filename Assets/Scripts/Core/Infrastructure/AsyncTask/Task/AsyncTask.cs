@@ -40,7 +40,7 @@ namespace Core.AsyncTask
 
 			return this;
 		}
-		
+
 		public virtual void Complete()
 		{
 			if (!IsCompleted)
@@ -52,6 +52,7 @@ namespace Core.AsyncTask
 
 		public bool IsCompleted { get; protected set; }
 		public bool IsFailed => _exception != null;
+
 		public IAsyncTask ThrowException()
 		{
 			if (_exception != null)
@@ -77,11 +78,12 @@ namespace Core.AsyncTask
 		}
 
 		public override bool keepWaiting => !IsCompleted && _exception == null;
+
 		public void Dispose()
 		{
 			if (!IsFailed && !IsCompleted)
 			{
-				Fail(new ObjectDisposedException( @"Reject Task with dispose" ) );
+				Fail(new ObjectDisposedException(@"Reject Task with dispose"));
 			}
 		}
 	}

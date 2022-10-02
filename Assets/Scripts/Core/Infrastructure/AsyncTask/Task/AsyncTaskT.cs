@@ -44,6 +44,5 @@ namespace Core.AsyncTask
 		{
 			return new AsyncTaskAwaiter<TResult>(this);
 		}
-
 	}
 }
