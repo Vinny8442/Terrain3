@@ -61,6 +61,8 @@ namespace Application.Init
 				var gameObjects = _currentScene.Value.GetRootGameObjects();
 				gameObjects?.SelectMany(o => o.GetComponentsInChildren<ISceneInstaller>())
 					.ForEach(installer => installer.Uninstall());
+
+				SceneManager.UnloadSceneAsync(_currentScene.Value);
 				_currentScene = null;
 			}
 		}
