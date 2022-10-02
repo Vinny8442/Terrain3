@@ -2,7 +2,7 @@
   "name": "Terrain.Scene.Ground.UI",
   "references": [
     "Application.Core",
-    "Terrain.Game",
-    "Application.Init"
+    "Application.Init",
+    "Terrain.Scene.Ground"
   ]
 }

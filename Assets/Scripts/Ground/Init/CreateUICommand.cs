@@ -3,7 +3,7 @@ using Core.AsyncTask;
 using UnityEngine;
 using Application.Init;
 
-namespace Application
+namespace Terrain.Scene.Ground
 {
 	public class CreateUICommand : ICommand
 	{
@@ -17,7 +17,7 @@ namespace Application
 			_prefabStorage = prefabStorage;
 		}
 
-		public async IAsyncTask Run()
+		public async IAsyncTask Run()  
 		{
 			try
 			{

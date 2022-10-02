@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace Game.Ground
+﻿namespace Game.Ground
 {
 	public interface INoiseSource
 	{

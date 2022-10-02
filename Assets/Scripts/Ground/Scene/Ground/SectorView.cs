@@ -1,10 +1,7 @@
 ﻿using Core;
-using Core.AsyncTask;
-using Game.Infrastructure;
-using Game.Sector;
 using UnityEngine;
 
-namespace Gui.Game.Ground
+namespace Game.Ground
 {
 	public class SectorView : NGrid, IInitable
 	{

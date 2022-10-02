@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Game.Infrastructure;
+using Game.Ground;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 

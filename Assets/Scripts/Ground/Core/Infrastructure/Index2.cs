@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Game.Infrastructure
+namespace Game.Ground
 {
 	public readonly struct Index2 : IEquatable<Index2>
 	{

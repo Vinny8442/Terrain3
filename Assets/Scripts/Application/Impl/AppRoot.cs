@@ -1,9 +1,9 @@
-﻿using Application.Init;
+﻿using Application;
+using Application.Init;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Zenject;
 
-namespace Application
+namespace Terrain.Application.Init
 {
 	public class AppRoot : MonoBehaviour
 	{

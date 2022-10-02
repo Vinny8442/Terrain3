@@ -6,12 +6,10 @@ using System.Threading;
 using Core;
 using Core.AsyncTask;
 using Core.Infrastructure;
-using Game.Infrastructure;
-using Game.Sector;
 using UnityEngine;
 using Zenject;
 
-namespace Gui.Game.Ground
+namespace Game.Ground
 {
     public class NGridGroup : MonoBehaviour, IInjectable, IInitable, ICoroutineRunner
     {

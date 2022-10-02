@@ -2,13 +2,9 @@
 using System.Collections.Generic;
 using Core;
 using Core.AsyncTask;
-using Game.Ground;
-using Game.Infrastructure;
 using UnityEngine;
-using Vector2 = UnityEngine.Vector2;
-using Vector3 = UnityEngine.Vector3;
 
-namespace Game.Sector
+namespace Game.Ground
 {
 	public class SectorControlService
 	{
@@ -109,10 +105,10 @@ namespace Game.Sector
 
 		public void EditorMoveCenter( Index2 delta )
 		{
-			UpdateCenterIndex( _centerSectorIndex + delta );
+			UpdateCenterIndex( _centerSectorIndex + delta ); 
 		}
 
-		public void Init( )
+		public void Init()
 		{
 			var groundSettings = LoadGroundSettings();
 

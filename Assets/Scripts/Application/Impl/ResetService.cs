@@ -1,7 +1,7 @@
 ﻿using System;
 using Application.Init;
 
-namespace Application
+namespace Terrain.Application.Init
 {
 	public class ResetService : IResetService
 	{

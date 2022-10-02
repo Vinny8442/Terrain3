@@ -1,20 +1,17 @@
-﻿using Core;
+﻿using Application.Init;
+using Core;
 using Core.AsyncTask;
 using Game.Ground;
-using Game.Sector;
-using Gui.Game.Ground;
-using Terrain.Character;
 using UnityEngine;
-using Application.Init;
 
-namespace Application
+namespace Terrain.Scene.Ground
 {
 	public class CreateWorldCommand : ICommand
 	{
 		private readonly PrefabStorage _prefabStorage;
 		private readonly SectorControlService _sectorControl;
 
-		private Transform _root;
+		private Transform _root; 
 
 		public CreateWorldCommand(SettingsStorage settings, PrefabStorage prefabStorage, SectorControlService sectorControl, Transform root)
 		{

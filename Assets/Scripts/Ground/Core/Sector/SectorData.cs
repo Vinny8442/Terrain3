@@ -1,9 +1,6 @@
 ﻿using System;
-using Game.Ground;
-using Game.Infrastructure;
-using UnityEngine;
 
-namespace Game.Sector
+namespace Game.Ground
 {
 	// public class GroundDataCache
 	// {

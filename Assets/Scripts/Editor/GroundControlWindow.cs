@@ -1,6 +1,6 @@
 ﻿using Application;
-using Game.Infrastructure;
-using Game.Sector;
+using Game.Ground;
+using Terrain.Application.Init;
 using UnityEditor;
 using UnityEngine;
 

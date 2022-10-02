@@ -3,11 +3,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Core.AsyncTask;
 using Core.Infrastructure.AsyncTask;
-using Game.Ground;
-using Game.Infrastructure;
 using UnityEngine;
 
-namespace Game.Sector
+namespace Game.Ground
 {
 	public class SectorDataProvider
 	{
@@ -17,14 +15,14 @@ namespace Game.Sector
 		{
 			_heightSource = heightSource;
 		}
-		
+
 		public async Task<IEnumerable<SectorData>> RequestSectorData(List<SectorRequest> requests)
 		{
-			int index = 0;
 			List<IAsyncTask<SectorData>> tasks = new List<IAsyncTask<SectorData>>(requests.Count);
 			foreach (SectorRequest sectorRequest in requests)
 			{
-				var task = new ThreadAsyncTask<SectorData>(() => GenerateSectorData(sectorRequest), CancellationToken.None);
+				var task = new ThreadAsyncTask<SectorData>(() => GenerateSectorData(sectorRequest),
+					CancellationToken.None);
 				tasks.Add(task);
 			}
 
@@ -43,6 +41,7 @@ namespace Game.Sector
 					data[index] = GetHeightInternal(i, j, request.Offset, request.Scale, subDivs);
 				}
 			}
+
 			return new SectorData(request.Index, request.Density, data);
 		}
 
@@ -52,10 +51,10 @@ namespace Game.Sector
 			// Vector2 relPosition = new Vector2((float) i / (SubDivs + 1), (float) j / (SubDivs + 1));
 			// Vector2 localPosition = Size * relPosition;
 			// Vector2 globalPosition = Position + localPosition - Size / 2;
-			float gx = (float) i / (SubDivs) * Size.x + Position.x; 
+			float gx = (float) i / (SubDivs) * Size.x + Position.x;
 			float gy = (float) j / (SubDivs) * Size.y + Position.y;
 			float result = _heightSource.GetHeight(gx, gy);
-			return result; 
+			return result;
 		}
 
 		public readonly struct SectorRequest

@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Profiling;
 
-namespace Gui.Game.Ground
+namespace Game.Ground
 {
 	[RequireComponent(typeof(MeshFilter))]
 	[RequireComponent(typeof(MeshRenderer))]

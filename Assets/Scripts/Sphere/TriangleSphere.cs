@@ -149,7 +149,6 @@ public class TriangleSphere : MonoBehaviour
             verts[BC] = Spherize((verts[B] + verts[C]) / 2);
 
             _subs = new TriData[4];
-            int index = 0;
             _subs[0] = new TriData(A, AB, AC);
             _subs[1] = new TriData(B, BC, AB);
             _subs[2] = new TriData(C, AC, BC);

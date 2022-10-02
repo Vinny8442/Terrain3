@@ -1,9 +1,8 @@
 ﻿using Core;
-using Game.Sector;
 using UnityEngine;
 using Zenject;
 
-namespace Terrain.Character
+namespace Game.Ground
 {
 	public class PlayerController : MonoBehaviour, IInitable, IInjectable
 	{
@@ -21,7 +20,7 @@ namespace Terrain.Character
 		[Range(1, 10f)] public float RotationSpeed = 2f;
 		
 		private Vector3 _gravityVelocity;
-		private bool _grounded;
+		private bool _grounded; 
 		private bool _positionUpdated;
 
 		public void Init() {}

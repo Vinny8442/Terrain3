@@ -3,7 +3,7 @@ using Core;
 using UnityEngine;
 using Zenject;
 
-namespace Application
+namespace Terrain.Application.Init
 {
 	public class RootInstaller
 	{

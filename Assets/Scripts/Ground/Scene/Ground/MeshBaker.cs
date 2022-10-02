@@ -7,7 +7,7 @@ using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
 
-namespace Gui.Game.Ground
+namespace Game.Ground
 {
 	public class MeshBaker
 	{
