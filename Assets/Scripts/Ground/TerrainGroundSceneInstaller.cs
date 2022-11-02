@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Application.Init;
 using Core;
 using Core.AsyncTask;
 using Game.Ground;
+using Game.Ground.Services;
 using UnityEngine;
 using Zenject;
 
@@ -16,22 +18,21 @@ namespace Terrain.Scene.Ground
 		[SerializeField] private Transform _root;
 		[SerializeField] private RectTransform _uiRoot;
 		[SerializeField] private RectTransform _mainCamera;
+		[SerializeField] private TerrainGravity _gravity;
 
 		public IAsyncTask Install(DiContainer container)
 		{
 			_container = container;
 
-			container.BindInterfacesTo<HeightDataSource>().AsSingle().Lazy();
-			container.Bind<SectorDataProvider>().AsSingle().Lazy();
-			container.Bind<SectorControlService>().AsSingle().Lazy();
+			CreateDependencies(container);
+			InjectGameObjects(container);
 
-			return StartLoading();  
+			return StartLoading().WhenCompleted( InitDependencies );  
 		}
 
 		public void Uninstall()
 		{
-			foreach (IInitable initable in _root.GetComponentsInChildren<IInitable>()
-				         .Concat(_uiRoot.GetComponentsInChildren<IInitable>()))
+			foreach (IInitable initable in GetAllComponents<IInitable>())
 			{
 				try
 				{
@@ -47,10 +48,64 @@ namespace Terrain.Scene.Ground
 			{
 				Destroy(child.gameObject);
 			}
+			
+			UnInitDependency<SectorControlService>();
+			UnInitDependency<PlayerInputService>();
+			UnInitDependency<PlayerCharacterControlService>();
+			UnInitDependency<TerrainGravity>();
 
 			_container.UnbindInterfacesTo<HeightDataSource>();
 			_container.Unbind<SectorDataProvider>();
 			_container.Unbind<SectorControlService>();
+			_container.Unbind<PlayerInputService>();
+			_container.Unbind<PlayerCharacterControlService>();
+			_container.Unbind<TerrainGravity>();
+		}
+
+		private void CreateDependencies(DiContainer container)
+		{
+			container.BindInterfacesTo<HeightDataSource>().AsSingle().Lazy();
+			container.Bind<SectorDataProvider>().AsSingle().Lazy();
+			container.Bind<SectorControlService>().AsSingle().Lazy();
+			container.Bind<PlayerInputService>().AsSingle().Lazy();
+			container.Bind<PlayerCharacterControlService>().AsSingle().Lazy();
+			container.Bind<TerrainGravity>().FromInstance( _gravity ).AsSingle();
+		}
+
+		private void InjectGameObjects(DiContainer container)
+		{
+			foreach (IInjectable injectable in GetAllComponents<IInjectable>())
+			{
+				container.Inject(injectable);
+			}
+			
+			foreach (IInitable initable in GetAllComponents<IInitable>())
+			{
+				initable.Init();
+			}
+		}
+
+		private void InitDependencies()
+		{
+			InitDependency<SectorControlService>();
+			InitDependency<PlayerInputService>();
+			InitDependency<PlayerCharacterControlService>();
+			InitDependency<TerrainGravity>();
+		}
+
+		private void InitDependency<T>() where T : IInitable
+		{
+			_container.Resolve<T>().Init();
+		} 
+
+		private void UnInitDependency<T>() where T : IInitable
+		{
+			_container.Resolve<T>().UnInit();
+		} 
+
+		private IEnumerable<T> GetAllComponents<T>()
+		{
+			return _root.GetComponentsInChildren<T>().Concat(_uiRoot.GetComponentsInChildren<T>());
 		}
 
 		public Camera GetCamera()

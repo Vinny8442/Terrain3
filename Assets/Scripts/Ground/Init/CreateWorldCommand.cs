@@ -2,7 +2,9 @@
 using Core;
 using Core.AsyncTask;
 using Game.Ground;
+using Game.Ground.Services;
 using UnityEngine;
+using Zenject;
 
 namespace Terrain.Scene.Ground
 {
@@ -11,10 +13,18 @@ namespace Terrain.Scene.Ground
 		private readonly PrefabStorage _prefabStorage;
 		private readonly SectorControlService _sectorControl;
 
-		private Transform _root; 
+		private Transform _root;
+		private PlayerCharacterControlService _charControlService;
+		
+		[Inject] private TerrainGravity _gravity;
 
-		public CreateWorldCommand(SettingsStorage settings, PrefabStorage prefabStorage, SectorControlService sectorControl, Transform root)
+		public CreateWorldCommand(
+			PrefabStorage prefabStorage, 
+			SectorControlService sectorControl,
+			PlayerCharacterControlService charControlService,
+			Transform root)
 		{
+			_charControlService = charControlService;
 			_sectorControl = sectorControl;
 			_prefabStorage = prefabStorage;
 			_root = root;
@@ -23,9 +33,12 @@ namespace Terrain.Scene.Ground
 		public async IAsyncTask Run()
 		{
 			_sectorControl.Init();
+			_gravity.Init();
 			
 			NGridGroup _gridGroup = _prefabStorage.InstantiateAs<NGridGroup>("SectorViewGroup", _root);
-			PlayerController avatar = _prefabStorage.InstantiateAs<PlayerController>("Avatar", _root);
+			CharAnimationController avatar = _prefabStorage.InstantiateAs<CharAnimationController>("Avatar", _root);
+
+			_charControlService.RegisterController(avatar);
 			
 			Completed = true;
 		}

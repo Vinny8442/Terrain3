@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Core.AsyncTask;
 using Core.Infrastructure;
 using UnityEngine;
@@ -47,11 +49,11 @@ namespace Application.Init
 			_loadingTask = null;
 
 			_currentScene = SceneManager.GetSceneByBuildIndex(_sceneBeingLoaded.Value);
-			var gameObjects = _currentScene?.GetRootGameObjects();
-			gameObjects?.SelectMany(o => o.GetComponentsInChildren<ISceneInstaller>())
-				.ForEach(installer => installer.Install(_container));
 
-			currentLoading.Complete();
+			var gameObjects = _currentScene.Value.GetRootGameObjects();
+			var installers = gameObjects.SelectMany(o => o.GetComponentsInChildren<ISceneInstaller>());
+			var installationTasks = installers.Select(installer => installer.Install(_container)).ToArray();
+			TaskUtils.WaitAll(installationTasks, CancellationToken.None).WhenCompleted(currentLoading.Complete);
 		}
 
 		private void UnloadCurrentScene()

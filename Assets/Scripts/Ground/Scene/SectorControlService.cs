@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Game.Ground
 {
-	public class SectorControlService
+	public class SectorControlService : IInitable
 	{
 		private static readonly Vector2 SectorSize = Vector2.one;
 		private const int MaxDensity = 7;
@@ -114,10 +114,11 @@ namespace Game.Ground
 
 			_sectorSize = groundSettings.SectorSize;
 
-			// _heightSource = new HeightDataSource(groundSettings.Noises);
-			// _cache = new GroundDataCache();
-
 			HandleCharacterPositionUpdated( Vector3.zero );
+		}
+		
+		public void UnInit()
+		{
 		}
 
 		// public void UnInit()

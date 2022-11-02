@@ -9,7 +9,7 @@ namespace Game.Ground
 {
 	public class SectorDataProvider
 	{
-		private IHeightSource _heightSource;
+		private readonly IHeightSource _heightSource;
 
 		public SectorDataProvider(IHeightSource heightSource)
 		{
