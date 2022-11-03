@@ -47,8 +47,8 @@ namespace Game.Ground
 					vert.z = y * tileSizeY - 0.5f;
 					vert.y = GetHeight( x, y );
 					ref var uv = ref uvs[index];
-					uv.x = x / subsX;
-					uv.y = y / subsY;
+					uv.x = (float)x / subsX;
+					uv.y = (float)y / subsY;
 					if ( x != subsX && y != subsY )
 					{
 						tris[triIndex * 6 + 0] = index;
