@@ -12,9 +12,9 @@ namespace Application.Init
 {
 	public class SceneLoader
 	{
-		private int _loaderSceneIndex;
+		private int _preloaderSceneIndex;
 		private AsyncTask _loadingTask = null;
-		private int? _sceneBeingLoaded = null;
+		private int _sceneBeingLoaded;
 		private Scene? _currentScene = null;
 
 		private readonly DiContainer _container;
@@ -23,9 +23,9 @@ namespace Application.Init
 		public bool IsBusy => _loadingTask != null;
 		public IAsyncTask Loading => _loadingTask;
 
-		public SceneLoader(DiContainer container, int loaderSceneIndex)
+		public SceneLoader(DiContainer container, int preloaderSceneIndex)
 		{
-			_loaderSceneIndex = loaderSceneIndex;
+			_preloaderSceneIndex = preloaderSceneIndex;
 			_container = container;
 		}
 
@@ -48,7 +48,7 @@ namespace Application.Init
 			var currentLoading = _loadingTask;
 			_loadingTask = null;
 
-			_currentScene = SceneManager.GetSceneByBuildIndex(_sceneBeingLoaded.Value);
+			_currentScene = SceneManager.GetSceneByBuildIndex(_sceneBeingLoaded);
 
 			var gameObjects = _currentScene.Value.GetRootGameObjects();
 			var installers = gameObjects.SelectMany(o => o.GetComponentsInChildren<ISceneInstaller>());
