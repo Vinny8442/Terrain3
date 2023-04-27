@@ -1,4 +1,5 @@
-﻿using Core;
+﻿using System;
+using Core;
 using UnityEngine;
 
 namespace Game.Ground
@@ -22,6 +23,13 @@ namespace Game.Ground
 
 		public Vector3 WorldPosition => transform.position;
 
+		private void Update()
+		{
+			if (_charController.isGrounded)
+			{
+				// _fallin
+			}
+		}
 
 		private bool UpdateMove()
 		{
