@@ -7,7 +7,7 @@ namespace Game.Ground
 	public class CharAnimationController : MonoBehaviour, IInitable
 	{
 		[SerializeField] private CharacterController _charController;
-		[SerializeField] private Animator animator;
+		[SerializeField] public Animator animator;
 		[SerializeField] private float _forwardSpeed = 1;
 		
 		// [Range(0,1f)] public float StartAnimTime = 0.3f;

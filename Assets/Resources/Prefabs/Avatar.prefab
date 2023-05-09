@@ -298,17 +298,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9a8cf06f42e47da88953a53a7bf26d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _gravity: 0.5
   _charController: {fileID: 9062863894537307216}
   animator: {fileID: 7054208668527873683}
-  _groundSensitivity: 0.1
-  _surfaceLayer:
-    serializedVersion: 2
-    m_Bits: 256
   _forwardSpeed: 10
-  StartAnimTime: 0.3
-  StopAnimTime: 0.15
-  RotationSpeed: 1
 --- !u!143 &9062863894537307216
 CharacterController:
   m_ObjectHideFlags: 0
@@ -420,7 +412,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.86927, y: 1}
+    m_SensorSize: {x: 2.228745, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0

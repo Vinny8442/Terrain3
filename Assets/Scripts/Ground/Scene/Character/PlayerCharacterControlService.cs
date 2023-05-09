@@ -3,7 +3,6 @@ using Core;
 using Core.Infrastructure;
 using Game.Ground.Services;
 using UnityEngine;
-using Zenject;
 
 namespace Game.Ground
 {
@@ -72,7 +71,7 @@ namespace Game.Ground
 
 		private void HandleJump()
 		{
-			Debug.Log("Handle Jump");
+			_charController.animator.SetTrigger("JumpAtPlace");
 		}
 
 		private void HandleForward()
