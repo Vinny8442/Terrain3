@@ -50,16 +50,18 @@ namespace Terrain.Scene.Ground
 			}
 			
 			UnInitDependency<SectorControlService>();
-			UnInitDependency<PlayerInputService>();
+			UnInitDependency<PlayerInputReaderService>();
 			UnInitDependency<PlayerCharacterControlService>();
 			UnInitDependency<TerrainGravity>();
+			UnInitDependency<AccelerationService>();
 
 			_container.UnbindInterfacesTo<HeightDataSource>();
 			_container.Unbind<SectorDataProvider>();
 			_container.Unbind<SectorControlService>();
-			_container.Unbind<PlayerInputService>();
+			_container.Unbind<PlayerInputReaderService>();
 			_container.Unbind<PlayerCharacterControlService>();
 			_container.Unbind<TerrainGravity>();
+			_container.Unbind<AccelerationService>();
 		}
 
 		private void CreateDependencies(DiContainer container)
@@ -67,8 +69,9 @@ namespace Terrain.Scene.Ground
 			container.BindInterfacesTo<HeightDataSource>().AsSingle().Lazy();
 			container.Bind<SectorDataProvider>().AsSingle().Lazy();
 			container.Bind<SectorControlService>().AsSingle().Lazy();
-			container.Bind<PlayerInputService>().AsSingle().Lazy();
+			container.Bind<PlayerInputReaderService>().AsSingle().Lazy();
 			container.Bind<PlayerCharacterControlService>().AsSingle().Lazy();
+			container.Bind<AccelerationService>().AsSingle().Lazy();
 			container.Bind<TerrainGravity>().FromInstance( _gravity ).AsSingle();
 		}
 
@@ -88,9 +91,10 @@ namespace Terrain.Scene.Ground
 		private void InitDependencies()
 		{
 			InitDependency<SectorControlService>();
-			InitDependency<PlayerInputService>();
+			InitDependency<PlayerInputReaderService>();
 			InitDependency<PlayerCharacterControlService>();
 			InitDependency<TerrainGravity>();
+			InitDependency<AccelerationService>();
 		}
 
 		private void InitDependency<T>() where T : IInitable

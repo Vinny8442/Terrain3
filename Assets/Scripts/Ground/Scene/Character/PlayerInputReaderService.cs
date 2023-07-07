@@ -5,12 +5,12 @@ using UnityEngine;
 
 namespace Game.Ground
 {
-	public class PlayerInputService : IUpdateTarget, IInitable
+	public class PlayerInputReaderService : IUpdateTarget, IInitable
 	{
 		private readonly IUpdater _updater;
 		public event Action<InputData> OnInput;
 		
-		public PlayerInputService(IUpdater updater)
+		public PlayerInputReaderService(IUpdater updater)
 		{
 			_updater = updater;
 		}
@@ -23,7 +23,7 @@ namespace Game.Ground
 
 			if (inputX != 0 || inputZ != 0 || jump)
 			{
-				OnInput?.Invoke(new InputData(inputZ, inputX, jump));
+				OnInput?.Invoke(new InputData(inputZ, inputX, jump, dt));
 			} 
 		}
 
@@ -42,9 +42,11 @@ namespace Game.Ground
 			public readonly float Forward;
 			public readonly float Side;
 			public readonly bool Jump;
+			public readonly float DT;
 
-			public InputData(float forward, float side, bool jump)
+			public InputData(float forward, float side, bool jump, float dt)
 			{
+				DT = dt;
 				Jump = jump;
 				Side = side;
 				Forward = forward;

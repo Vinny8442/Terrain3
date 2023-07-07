@@ -10,7 +10,7 @@ namespace Game.Ground.Services
 {
 	public class TerrainGravity : MonoBehaviour, IUpdateTarget, IInjectable, IInitable
 	{
-		[SerializeField] private float _g = 0.2f;
+		[SerializeField] private float _g = 2f;
 
 		[Inject] private IUpdater _updater;
 
@@ -80,7 +80,7 @@ namespace Game.Ground.Services
 					_velocity += _direction * _g * dt;
 				}
 				
-				_target.ApplyGravity(_velocity);
+				_target.ApplyGravity(_velocity * dt);
 			}
 			
 		}

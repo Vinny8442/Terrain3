@@ -6,15 +6,25 @@ namespace Game.Ground
 {
 	public class CharAnimationController : MonoBehaviour, IInitable
 	{
-		[SerializeField] private CharacterController _charController;
+		[SerializeField] public CharacterController _charController;
 		[SerializeField] public Animator animator;
 		[SerializeField] private float _forwardSpeed = 1;
-		
+		[SerializeField] private AnimationCurve _accelerationCurve;
+		[SerializeField] private float _rotationSpeed;
+		[SerializeField] private AnimationCurve _jumpAtPlaceCurve;
+
 		// [Range(0,1f)] public float StartAnimTime = 0.3f;
 		// [Range(0, 1f)] public float StopAnimTime = 0.15f;
 		// [Range(1, 10f)] public float RotationSpeed = 2f;
 		
 		public bool IsGrounded => _charController.isGrounded;
+
+		public AnimationCurve Acceleration => _accelerationCurve;
+		public AnimationCurve JumpAtPlace => _jumpAtPlaceCurve;
+
+		public float RotationSpeed => _rotationSpeed;
+		
+		public float MaxSpeed => _forwardSpeed;
 
 		public void Move(Vector3 movement)
 		{
