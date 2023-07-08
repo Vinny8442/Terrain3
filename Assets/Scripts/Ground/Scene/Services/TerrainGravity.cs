@@ -11,10 +11,11 @@ namespace Game.Ground.Services
 	public class TerrainGravity : MonoBehaviour, IUpdateTarget, IInjectable, IInitable
 	{
 		[SerializeField] private float _g = 2f;
+		[SerializeField] private float _airFriction = 0.01f;
 
 		[Inject] private IUpdater _updater;
+		[Inject] private AccelerationService _acceleration;
 
-		private readonly List<TargetData> _targets = new List<TargetData>();
 		private readonly Vector3 _direction = Vector3.down;
 
 
@@ -28,61 +29,70 @@ namespace Game.Ground.Services
 			_updater.RemoveUpdate(this);
 		}
 
-		public void AddTarget(Target target)
+		public void AddTarget(ITarget target)
 		{
-			if (!_targets.Any(data => data.Contains(target)))
-			{
-				_targets.Add(new TargetData(target, _g, _direction));
-			}
+			_acceleration.AddForce(target, new Gravity(_acceleration, target, _g, _direction, _airFriction));
 		}
 		
-		public interface Target
+		public interface ITarget : AccelerationService.ITarget
 		{
-			void ApplyGravity(Vector3 gravity);
 			bool IsGrounded { get; }
 		}
 
 		public void HandleUpdate(float dt)
 		{
-			for (int i = 0; i < _targets.Count; i++)
-			{
-				var target = _targets[i];
-				target.Update(dt);
-				_targets[i] = target;
-			}
 		}
 
-		private struct TargetData
+		private class Gravity : AccelerationService.IForceHandle, AccelerationService.IForce
 		{
-			private readonly Target _target;
-			private Vector3 _velocity;
-			private readonly float _g;
-			private readonly Vector3 _direction;
+			private readonly Vector3 _value;
+			private readonly AccelerationService _velocityDataProvider;
+			private readonly float _airFrictionFactor;
+			private readonly ITarget _target;
+			private float _freeFallTime = 0;
+			private bool _grounded = false;
 
-			public TargetData(Target target, float g, Vector3 direction)
+			public Gravity(AccelerationService velocityDataProvider, ITarget target, float value, Vector3 direction, float airFrictionFactor)
 			{
-				_direction = direction;
-				_g = g;
 				_target = target;
-				_velocity = Vector3.zero;
+				_airFrictionFactor = airFrictionFactor;
+				_velocityDataProvider = velocityDataProvider;
+				_value = value * direction;
 			}
 
-			public bool Contains(Target target) => _target == target;
+			public void Complete()
+			{
+				Completed = true;
+			}
 
-			public void Update(float dt)
+			public void Rotate(Quaternion rotation)
+			{
+				
+			}
+
+			public bool Completed { get; private set; }
+
+			public Vector3 Update(float dt)
 			{
 				if (_target.IsGrounded)
 				{
-					_velocity = _direction * _g;
+					if (!_grounded)
+					{
+						_grounded = true;
+						var vp = Vector3.Project(_velocityDataProvider.GetVelocity(_target), _value);
+						Debug.Log($"Grounded after {_freeFallTime}");
+						return -vp / dt * 0.95f;
+					}
+					_freeFallTime = 0;
+					return Vector3.zero;
 				}
-				else
-				{
-					_velocity += _direction * _g * dt;
-				}
-				
-				_target.ApplyGravity(_velocity * dt);
+
+				_grounded = false;
+				_freeFallTime += dt;
+				var velocityProjection = Vector3.Project(_velocityDataProvider.GetVelocity(_target), _value).magnitude;
+				var airFriction = velocityProjection * _airFrictionFactor * _value;
+				return _value - airFriction;
 			}
-			
 		}
 	}
 }

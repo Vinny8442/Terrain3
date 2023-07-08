@@ -10,24 +10,23 @@ namespace Game.Ground.Services
 	public class AccelerationService : IUpdateTarget, IInitable, IInjectable
 	{
 		private readonly IUpdater _updater;
-		private readonly List<IAccelerationData> _forces = new();
+		private readonly Dictionary<ITarget, TargetForces> _items = new();
 
 		public AccelerationService(IUpdater updater)
 		{
 			_updater = updater;
 		}
+
+		public Vector3 GetVelocity(ITarget target)
+		{
+			return _items.TryGetValue(target, out var forces) ? forces.Velocity : Vector3.zero;
+		}
 		
 		public void HandleUpdate(float dt)
 		{
-			foreach (var force in _forces.ToArray())
+			foreach (var forces in _items.Values)
 			{
-				if (!force.Completed){
-					force.Update(dt);
-					if (force.Completed)
-					{
-						_forces.Remove(force);
-					}
-				}
+				forces.Update(dt);
 			}
 		}
 
@@ -41,250 +40,175 @@ namespace Game.Ground.Services
 			_updater.RemoveUpdate(this);
 		}
 
-		public Handler CreateAcceleration(Target target, Vector3 force, float decelerationRatio, float maxSpeed)
+		public IForce AddForce(ITarget target, IForce force)
 		{
-			var result = new RegularAcceleration(target, force, maxSpeed, decelerationRatio);
-			_forces.Add(result);
-			return result;
+			if (!_items.TryGetValue(target, out var forces))
+			{
+				_items[target] = forces = new TargetForces(target);
+			}
+			// var forces = _items[target] ??= new TargetForces(target);
+			forces.AddForce(force);
+			return force;
 		}
 
-		public Handler CreateAcceleration(Target target, Vector3 force, AnimationCurve curve)
-		{
-			var result = new CurveAcceleration(target, force, curve);
-			_forces.Add(result);
-			return result;
-		}
 
-		public interface Target
+		public interface ITarget
 		{
 			void ApplyAcc(Vector3 movement);
 		}
 
-		public interface Handler
+		public interface IForceHandle
 		{
-			void Proceed(float dt);
-			bool IsIdle { get; }
-			void ReleaseWhenCompleted();
 			void Rotate(Quaternion rotation);
 		}
 
-		private interface IAccelerationData
+		public interface IForce
 		{
 			bool Completed { get; }
-			void Update(float dt);
+			Vector3 Update(float dt);
 		}
 
 
-		private abstract class AbstractAcceleration : Handler, IAccelerationData
+		private class TargetForces
 		{
-			protected enum State
-			{
-				Idle,
-				Acceleration, 
-				Deceleration
-			}
-			
-			protected State _state = State.Idle;
-			private bool _releaseWhenCompleted = false;
-			
-			public abstract void Proceed(float dt);
+			private readonly ITarget _target;
+			private readonly List<IForce> _forces = new();
+			public Vector3 Velocity { get; private set; } = Vector3.zero;
 
-			public bool IsIdle => _state == State.Idle;
-			
-			public void ReleaseWhenCompleted()
+			public TargetForces(ITarget target)
 			{
-				_releaseWhenCompleted = true;
+				_target = target;
 			}
 
-			public abstract void Rotate(Quaternion rotation);
-
-			public bool Completed { get; private set; } = false;
-			
-			public abstract void Update(float dt);
-
-			protected void Complete()
+			public void AddForce(IForce force)
 			{
-				if (_releaseWhenCompleted)
+				_forces.Add(force);
+			}
+
+			public void Update(float dt)
+			{
+				Vector3 resultAcc = _forces.Aggregate(Vector3.zero, (current, force) =>
+				{
+					var acc = force.Update(dt);
+					if (acc.magnitude > 0)
+					{
+						Debug.Log($"FORCE: {force} {acc}");
+					}
+					return current + acc;
+				});
+				
+				Velocity += resultAcc * dt;
+				if (resultAcc.magnitude > 0)
+				{
+					Debug.Log($"-------------------- UPDATE {Velocity}");
+				}
+
+
+				_forces.RemoveAll(f => f.Completed);
+				_target.ApplyAcc(Velocity * dt);
+			}
+			
+		}
+		public class CurveForce : IForceHandle, IForce
+		{
+			private Vector3 _force;
+			private AnimationCurve _curve;
+			private float _time;
+			private Keyframe _lastKey;
+			private float _duration;
+
+			public CurveForce(Vector3 force, AnimationCurve curve, float duration = 0)
+			{
+				_curve = curve;
+				_force = force;
+				_time = 0;
+				_lastKey = curve.keys.Last();
+				_duration = duration > 0 ? duration : _lastKey.time;
+			}
+
+			public void Rotate(Quaternion rotation)
+			{
+				_force = rotation * _force; 
+			}
+
+			public bool Completed { get; private set; }
+			public Vector3 Update(float dt)
+			{
+				if (Completed) return Vector3.zero;
+				
+				_time += dt;
+				if (_time > _duration)
 				{
 					Completed = true;
 				}
+
+				if (_time > _lastKey.time)
+				{
+					return _force * _lastKey.value;
+				}
+				
+				Debug.Log($"Curve: {_time} {_curve.Evaluate(_time)} {_force * _curve.Evaluate(_time)}");
+
+				return _force * _curve.Evaluate(_time);
 			}
-			
 		}
 
-		private class CurveAcceleration : AbstractAcceleration
+		public class LinearForce : IForceHandle, IForce
 		{
-			private Target _target;
-			private Vector3 _force;
-			private CurveWrapper _curve;
-			private float _time;
-			private float _timeLeft;
-			private Vector3 _currentSpeed;
+			private  Vector3 _acceleration = Vector3.zero;
+			private float _timeLeft = 0;
+			private bool _deceleration = false;
+			private readonly float _duration;
+			private readonly float _decelerationRatio;
 
-			public CurveAcceleration(Target target, Vector3 force, AnimationCurve curve)
+			public LinearForce(Vector3 force, float duration, float decelerationRatio = 0)
 			{
-				_curve = new CurveWrapper(curve);
-				_force = force;
-				_target = target;
-				_time = 0;
+				_decelerationRatio = decelerationRatio;
+				_duration = duration;
+				_timeLeft = duration;
+				_acceleration = force;
 			}
 
-			public override void Proceed(float dt)
+			public void Rotate(Quaternion rotation)
 			{
-				
-				if (_state == State.Idle && dt == 0)
+				_acceleration = rotation * _acceleration; 
+			}
+
+			public bool Completed { get; private set; }
+			
+			
+			public Vector3 Update(float dt)
+			{
+				if (Completed)
 				{
-					_timeLeft = _curve.Duration;
-				} 
-				_state = State.Acceleration;
-				_timeLeft = Math.Max(dt, _timeLeft);
-			}
-
-			public override void Rotate(Quaternion rotation)
-			{
+					return Vector3.zero;
+				}
 				
-			}
-
-			public override void Update(float dt)
-			{
+				_timeLeft -= dt;
 				if (_timeLeft <= 0)
 				{
-					_time = 0;
-					_timeLeft = 0;
-					if (_state == State.Acceleration)
+					if (_deceleration)
 					{
-						Debug.Log($"@#NO time left {_timeLeft}");
-						_state = State.Idle;
-						Complete();
+						Completed = true;
+						return Vector3.zero;
 					}
-					return;
+					else
+					{
+						if (_decelerationRatio > 0)
+						{
+							_deceleration = true;
+							_timeLeft = _duration / _decelerationRatio;
+							_acceleration *= -_decelerationRatio;
+						}
+						else
+						{
+							Completed = true;
+							return Vector3.zero;
+						}
+					}
 				}
-				
-				_timeLeft -= dt;
-				_time += dt;
-				if (_time > _curve.Duration)
-				{
-					_time -= _curve.Duration;
-				}
-
-				_currentSpeed = _curve.Evaluate(_time) * _force;
-				
-				Debug.Log($"@#UPD {_timeLeft} {_time} {_currentSpeed}");
-				
-				_target.ApplyAcc(_currentSpeed * dt);
+				return _acceleration;
 			}
-
-			private readonly struct CurveWrapper
-			{
-				private readonly AnimationCurve _source;
-				private readonly float _curveMaxValue;
-
-				public readonly float Duration;
-
-				public CurveWrapper(AnimationCurve source)
-				{
-					_source = source;
-					_curveMaxValue = _source.keys.Max(key => key.value);
-					Duration = _source.keys.Max(key => key.time);
-				}
-
-				public float Evaluate(float normalizedTime)
-				{
-					return _source.Evaluate(normalizedTime);
-				}
-			}
-		}
-
-		private class RegularAcceleration : AbstractAcceleration
-		{
-			
-			private  Vector3 _acceleration = Vector3.zero;
-			private  Vector3 _deceleration;
-			private readonly float _maxSpeed = 1.3f;
-			private readonly Target _target = null;
-			private Vector3 _currentSpeed = Vector3.zero;
-			private float _timeLeft = 0;
-
-			public RegularAcceleration(Target target, Vector3 acceleration, float maxSpeed, float decelerationRatio = 1)
-			{
-				_maxSpeed = maxSpeed;
-				_acceleration = acceleration;
-				_deceleration = acceleration * -1 * decelerationRatio;
-				_target = target;
-			}
-
-			public override void Rotate(Quaternion rotation)
-			{
-				_currentSpeed = rotation * _currentSpeed;
-				_acceleration = rotation * _acceleration; 
-				_deceleration = rotation * _deceleration;
-
-				// Quaternion.
-			}
-
-			public override void Update(float dt)
-			{
-				var movement = Vector3.zero;
-				if (_state == State.Acceleration)
-				{
-					movement = Accelerate(dt);
-				}
-				else if (_state == State.Deceleration)
-				{
-					movement = Decelerate(dt);
-				}
-				
-				if (_state != State.Idle)
-				{
-					_target.ApplyAcc(movement);
-				}
-			}
-
-			public override void Proceed(float dt)
-			{
-				_state = State.Acceleration;
-				_timeLeft = Math.Max(dt, _timeLeft);
-			}
-
-			private Vector3 Accelerate(float dt)
-			{
-				_currentSpeed += _acceleration * dt;
-				if (_currentSpeed.magnitude > _maxSpeed)
-				{
-					var ratio = _maxSpeed / _currentSpeed.magnitude;
-					_currentSpeed *= ratio;
-				}
-
-				if (dt > _timeLeft)
-				{
-					dt = _timeLeft;
-					_state = State.Deceleration;
-				}
-
-				Debug.Log($"Acc {_currentSpeed.magnitude} {_acceleration.magnitude} {_timeLeft} ");
-				_timeLeft -= dt;
-				return _currentSpeed * dt;
-			}
-
-			private Vector3 Decelerate(float dt)
-			{
-				var dv = _deceleration * dt;
-				
-				if (_currentSpeed.magnitude <= dv.magnitude)
-				{
-					_currentSpeed = Vector3.zero;
-					_state = State.Idle;
-					
-					Complete();
-				}
-				else
-				{
-					_currentSpeed += dv;
-				}
-				Debug.Log($"Dcc {_currentSpeed.magnitude} {_deceleration.magnitude}");
-				return _currentSpeed * dt;
-			}
-			
 		}
 	}
 }

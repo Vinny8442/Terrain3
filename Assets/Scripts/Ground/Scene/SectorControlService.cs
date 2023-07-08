@@ -10,17 +10,15 @@ namespace Game.Ground
 	{
 		private static readonly Vector2 SectorSize = Vector2.one;
 		private const int MaxDensity = 7;
-		public int Radius = 3;
+		private const int Radius = 3;
 
 		private readonly SettingsStorage _settings;
 		private readonly SectorDataProvider _dataProvider;
 
 		private float _sectorSize = 1;
-		// private GroundDataCache _cache;
-		// private HeightDataSource _heightSource;
 
-		private Index2 _centerSectorIndex = new Index2( 10000, 0 );
-		private Dictionary<Index2, SectorData> _sectors = new Dictionary<Index2, SectorData>( );
+		private Index2 _centerSectorIndex = new( 10000, 0 );
+		private readonly Dictionary<Index2, SectorData> _sectors = new( );
 
 		public event Action<Index2> OnDataLoaded;
 
@@ -96,13 +94,6 @@ namespace Game.Ground
 			return new Index2( (int)( x / _sectorSize + Math.Sign( x ) * 0.5f ), (int)( y / _sectorSize + Math.Sign( y ) * 0.5f ) );
 		}
 
-		// public void EditorRebuild( )
-		// {
-		// 	// UnInit();
-		// 	Init( );
-		// 	OnDataLoaded?.Invoke( default );
-		// }
-
 		public void EditorMoveCenter( Index2 delta )
 		{
 			UpdateCenterIndex( _centerSectorIndex + delta ); 
@@ -121,39 +112,11 @@ namespace Game.Ground
 		{
 		}
 
-		// public void UnInit()
-		// {
-		// 	_cache = null;
-		// }
-
 		private GroundSettings LoadGroundSettings()
 		{
 			_settings.Clear( "GroundSettings" );
 			var groundSettings = _settings.Load<GroundSettings>( "GroundSettings" );
 			return groundSettings;
 		}
-
-		// public interface IGridDataSource
-		// {
-		// 	float GetHeight(float relativeX, float relativeY);
-		// }
-
-		// private class HeightSourceWithOffset : IHeightSource
-		// {
-		// 	private IHeightSource _source;
-		// 	private Vector2 _offset;
-		// 	private Vector2 _size;
-		//
-		// 	public HeightSourceWithOffset(IHeightSource source, Vector2 offset, Vector2 size)
-		// 	{
-		// 		_size = size;
-		// 		_offset = offset;
-		// 		_source = source;
-		// 	}
-		// 	public float GetHeight(float x, float y)
-		// 	{
-		// 		return _source.GetHeight(x * _size.x + _offset.x, y * _size.y + _offset.y);
-		// 	}
-		// }
 	}
 }

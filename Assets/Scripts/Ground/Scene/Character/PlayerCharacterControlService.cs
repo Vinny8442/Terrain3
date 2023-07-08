@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Game.Ground
 {
-	public class PlayerCharacterControlService : TerrainGravity.Target, IUpdateTarget, IFixedUpdateTarget, IInitable, AccelerationService.Target
+	public class PlayerCharacterControlService : TerrainGravity.ITarget, IUpdateTarget, IFixedUpdateTarget, IInitable, AccelerationService.ITarget
 	{
 		public event Action OnJump = delegate { };
 		public event Action<float> OnRun = delegate { };
@@ -22,8 +22,8 @@ namespace Game.Ground
 		private bool _isWalking = false;
 		private float _walkingThreshold = 0.1f;
 		
-		private AccelerationService.Handler _forwardAcc;
-		private AccelerationService.Handler _jumpAcc;
+		private AccelerationService.IForceHandle _jumpAcc;
+		private AccelerationService.IForce _jumpForceHandle;
 
 		public PlayerCharacterControlService(
 			PlayerInputReaderService input, 
@@ -50,7 +50,6 @@ namespace Game.Ground
 			_updater.AddUpdate(this);
 			_updater.AddFixedUpdate(this);
 			
-			_forwardAcc = _accelerationService.CreateAcceleration(this, _charController.transform.forward * 5f, 10f, _charController.MaxSpeed);
 		}
 
 		public void UnInit()
@@ -81,16 +80,17 @@ namespace Game.Ground
 			{
 				Quaternion rotation = Quaternion.AngleAxis(Math.Sign(data.Side) * data.DT * _charController.RotationSpeed, _charController.transform.up);
 				_charController.transform.rotation *= rotation; 
-				_forwardAcc.Rotate(rotation);
 			}
 		}
 
 		private void HandleJump()
 		{
-			_charController.animator.SetTrigger("JumpAtPlace");
-			_jumpAcc = _accelerationService.CreateAcceleration(this, _charController.transform.up * 20f, _charController.JumpAtPlace);
-			_jumpAcc.Proceed(0.0f);
-			_jumpAcc.ReleaseWhenCompleted();
+			if (_jumpForceHandle?.Completed ?? true)
+			{
+				_charController.animator.SetTrigger("JumpAtPlace");
+				_jumpForceHandle = _accelerationService.AddForce(this, new AccelerationService.CurveForce(_charController.transform.up * 30f, _charController.JumpAtPlace));
+				// _jumpForceHandle = _accelerationService.AddForce(this, new AccelerationService.LinearForce(_charController.transform.up * 100, 0.5f));
+			}
 		}
 
 		private void HandleForward(float forward)
@@ -100,19 +100,15 @@ namespace Game.Ground
 			{
 				_isWalking = isWalking;
 				_charController.animator.SetBool("IsWalking", _isWalking);
+				// _accelerationService.AddForce(this, new AccelerationService.CurveForce(_charController.transform.up * 5, _charController.JumpAtPlace));
 				// var state = _charController.animator.GetNextAnimatorStateInfo(0);
 				// Debug.Log(state);
 			}
 			
 			if (_isWalking)
 			{
-				_forwardAcc.Proceed(0.2f);
+				// _forwardAcc.Proceed(0.2f);
 			}
-		}
-
-		public void ApplyGravity(Vector3 gravity)
-		{
-			_charController.Move(gravity);
 		}
 
 		public bool IsGrounded => _charController.IsGrounded;

@@ -47,10 +47,6 @@ namespace Game.Ground
 
 		private float GetHeightInternal(int i, int j, Vector2 Position, Vector2 Size, int SubDivs)
 		{
-			// return 0;
-			// Vector2 relPosition = new Vector2((float) i / (SubDivs + 1), (float) j / (SubDivs + 1));
-			// Vector2 localPosition = Size * relPosition;
-			// Vector2 globalPosition = Position + localPosition - Size / 2;
 			float gx = (float) i / (SubDivs) * Size.x + Position.x;
 			float gy = (float) j / (SubDivs) * Size.y + Position.y;
 			float result = _heightSource.GetHeight(gx, gy);

@@ -104,16 +104,6 @@ namespace Game.Ground
         }
 
 
-        // private IEnumerator CoroutineTest( )
-        // {
-        //     for ( int i = 0; i < 5; i++ )
-        //     {
-        //         yield return null;
-        //     }
-        //
-        //     yield return null;
-        // }
-
         private static IEnumerator RebuildSectors( List<SectorView> sectors )
         {
             sectors.Sort( ( a, b ) => b.Density.CompareTo( a.Density ) );
