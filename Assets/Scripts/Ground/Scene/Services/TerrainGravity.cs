@@ -46,13 +46,13 @@ namespace Game.Ground.Services
 		private class Gravity : AccelerationService.IForceHandle, AccelerationService.IForce
 		{
 			private readonly Vector3 _value;
-			private readonly AccelerationService _velocityDataProvider;
+			private readonly AccelerationService.IVelocityDataProvider _velocityDataProvider;
 			private readonly float _airFrictionFactor;
 			private readonly ITarget _target;
 			private float _freeFallTime = 0;
 			private bool _grounded = false;
 
-			public Gravity(AccelerationService velocityDataProvider, ITarget target, float value, Vector3 direction, float airFrictionFactor)
+			public Gravity(AccelerationService.IVelocityDataProvider velocityDataProvider, ITarget target, float value, Vector3 direction, float airFrictionFactor)
 			{
 				_target = target;
 				_airFrictionFactor = airFrictionFactor;
