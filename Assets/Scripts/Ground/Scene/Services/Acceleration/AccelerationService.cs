@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Game.Ground.Services
 {
-	public class AccelerationService : IUpdateTarget, IInitable, IInjectable, AccelerationService.IVelocityDataProvider
+	public class AccelerationService : IUpdateTarget, IInitable, AccelerationService.IVelocityDataProvider
 	{
 		private readonly IUpdater _updater;
 		private readonly Dictionary<ITarget, TargetForces> _items = new();
@@ -92,7 +92,7 @@ namespace Game.Ground.Services
 		}
 
 
-		private class TargetForces : AccelerationService.IForceHandle
+		private class TargetForces : IForceHandle
 		{
 			private readonly ITarget _target;
 			private readonly List<IForce> _forces = new();

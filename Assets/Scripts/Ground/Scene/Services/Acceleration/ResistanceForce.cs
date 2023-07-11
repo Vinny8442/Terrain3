@@ -4,11 +4,11 @@ namespace Game.Ground.Services
 {
 	public class ResistanceForce : AccelerationService.IForceHandle, AccelerationService.IForce
 	{
-		private AccelerationService.IVelocityDataProvider _velocityProvider;
+		private readonly AccelerationService.IVelocityDataProvider _velocityProvider;
+		private readonly AccelerationService.IForce _source;
+		private readonly AccelerationService.ITarget _target;
 		private Vector3 _axis;
-		private float _factor;
-		private AccelerationService.IForce _source;
-		private AccelerationService.ITarget _target;
+		private readonly float _factor;
 
 		public ResistanceForce(AccelerationService.IVelocityDataProvider velocityProvider, AccelerationService.ITarget target, float factor, AccelerationService.IForce source)
 		{

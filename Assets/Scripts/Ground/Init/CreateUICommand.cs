@@ -21,7 +21,7 @@ namespace Terrain.Scene.Ground
 		{
 			try
 			{
-				_prefabStorage.InjectAndInit( _uiRoot.gameObject );
+				// _prefabStorage.InjectAndInit( _uiRoot.gameObject );
 			}
 			finally
 			{

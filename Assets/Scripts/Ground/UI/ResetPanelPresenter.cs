@@ -14,14 +14,10 @@ namespace Gui.Game.UI
 		[Inject]
 		private IResetService _resetService;
 
-		private void Start()
-		{
-			_resetButton.onClick.AddListener( OnResetClick );
-		}
-
+		
 		public void Init()
 		{
-			
+			_resetButton.onClick.AddListener( OnResetClick );
 		}
 
 		public void UnInit()

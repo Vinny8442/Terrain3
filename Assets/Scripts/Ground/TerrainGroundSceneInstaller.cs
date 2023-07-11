@@ -4,6 +4,7 @@ using System.Linq;
 using Application.Init;
 using Core;
 using Core.AsyncTask;
+using Core.Infrastructure;
 using Game.Ground;
 using Game.Ground.Services;
 using UnityEngine;
@@ -14,6 +15,7 @@ namespace Terrain.Scene.Ground
 	public class TerrainGroundSceneInstaller : MonoBehaviour, ISceneInstaller
 	{
 		private DiContainer _container;
+		private List<Type> _initableDeps = new();
 
 		[SerializeField] private Transform _root;
 		[SerializeField] private RectTransform _uiRoot;
@@ -26,8 +28,9 @@ namespace Terrain.Scene.Ground
 
 			CreateDependencies(container);
 			InjectGameObjects(container);
+			InitGameObjects();
 
-			return StartLoading().WhenCompleted( InitDependencies );  
+			return StartLoading().WhenCompleted(InitDependencies);  
 		}
 
 		public void Uninstall()
@@ -44,17 +47,11 @@ namespace Terrain.Scene.Ground
 				}
 			}
 
-			foreach (Transform child in _root.transform)
-			{
-				Destroy(child.gameObject);
-			}
 			
-			UnInitDependency<SectorControlService>();
-			UnInitDependency<PlayerInputReaderService>();
-			UnInitDependency<PlayerCharacterControlService>();
-			UnInitDependency<TerrainGravity>();
-			UnInitDependency<AccelerationService>();
-
+			_root.transform.OfType<Transform>().Select(c => c.gameObject).ForEach(Destroy);
+			_initableDeps.Select(t => _container.Resolve(t)).Cast<IInitable>().ForEach(d => d.UnInit());
+			_initableDeps.Clear();
+			
 			_container.UnbindInterfacesTo<HeightDataSource>();
 			_container.Unbind<SectorDataProvider>();
 			_container.Unbind<SectorControlService>();
@@ -62,6 +59,7 @@ namespace Terrain.Scene.Ground
 			_container.Unbind<PlayerCharacterControlService>();
 			_container.Unbind<TerrainGravity>();
 			_container.Unbind<AccelerationService>();
+			// _container.Unbind<MovementService>();
 		}
 
 		private void CreateDependencies(DiContainer container)
@@ -73,19 +71,17 @@ namespace Terrain.Scene.Ground
 			container.Bind<PlayerCharacterControlService>().AsSingle().Lazy();
 			container.Bind<AccelerationService>().AsSingle().Lazy();
 			container.Bind<TerrainGravity>().FromInstance( _gravity ).AsSingle();
+			// container.Bind<MovementService>().AsSingle().Lazy();
 		}
 
 		private void InjectGameObjects(DiContainer container)
 		{
-			foreach (IInjectable injectable in GetAllComponents<IInjectable>())
-			{
-				container.Inject(injectable);
-			}
-			
-			foreach (IInitable initable in GetAllComponents<IInitable>())
-			{
-				initable.Init();
-			}
+			GetAllComponents<IInjectable>().ForEach(container.Inject);
+		}
+
+		private void InitGameObjects()
+		{
+			GetAllComponents<IInitable>().ForEach(c => c.Init());
 		}
 
 		private void InitDependencies()
@@ -100,6 +96,7 @@ namespace Terrain.Scene.Ground
 		private void InitDependency<T>() where T : IInitable
 		{
 			_container.Resolve<T>().Init();
+			_initableDeps.Add(typeof(T));
 		} 
 
 		private void UnInitDependency<T>() where T : IInitable

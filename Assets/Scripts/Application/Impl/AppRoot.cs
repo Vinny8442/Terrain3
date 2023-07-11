@@ -16,6 +16,7 @@ namespace Terrain.Application.Init
 
 		private DiContainer _container;
 		private SceneLoader _sceneLoader;
+		private RootInstaller _installer;
 
 		private void Start()
 		{
@@ -29,8 +30,8 @@ namespace Terrain.Application.Init
 			_container = new DiContainer();
 			_sceneLoader = new SceneLoader(_container, BaseLoaderSceneIndex);
 
-			var installer = new RootInstaller();
-			installer.Install(_container, _monobehUpdater);
+			_installer = new RootInstaller();
+			_installer.Install(_container, _monobehUpdater);
 
 			_container.ResolveRoots();
 			_container.Resolve<IResetService>().OnResetRequested += ClearAndReinstall;
@@ -47,6 +48,7 @@ namespace Terrain.Application.Init
 		private void Clear()
 		{
 			_sceneLoader.Clear();
+			_installer.UnInstall();
 		}
 	}
 }
