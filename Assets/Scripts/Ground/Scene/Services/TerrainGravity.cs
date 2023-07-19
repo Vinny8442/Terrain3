@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Core;
+﻿using Core;
 using Core.Infrastructure;
+using Game.Ground.Services.Movement;
 using UnityEngine;
 using Zenject;
 
@@ -34,7 +32,7 @@ namespace Game.Ground.Services
 			_acceleration.AddForce(target, new Gravity(_acceleration, target, _g, _direction, _airFriction));
 		}
 		
-		public interface ITarget : AccelerationService.ITarget
+		public interface ITarget : IMovable
 		{
 			bool IsGrounded { get; }
 		}
@@ -43,7 +41,7 @@ namespace Game.Ground.Services
 		{
 		}
 
-		private class Gravity : AccelerationService.IForceHandle, AccelerationService.IForce
+		private class Gravity : AccelerationService.IForce
 		{
 			private readonly Vector3 _value;
 			private readonly AccelerationService.IVelocityDataProvider _velocityDataProvider;
@@ -79,12 +77,15 @@ namespace Game.Ground.Services
 					if (!_grounded)
 					{
 						_grounded = true;
-						var vp = Vector3.Project(_velocityDataProvider.GetVelocity(_target), _value);
-						Debug.Log($"Grounded after {_freeFallTime}");
-						return -vp / dt * 0.95f;
+						Debug.Log($"Grounded {_freeFallTime}");
 					}
 					_freeFallTime = 0;
-					return Vector3.zero;
+					var vp = Vector3.Project(_velocityDataProvider.GetVelocity(_target), _value);
+					if (vp.y < -1)
+					{
+						return -(vp - Vector3.down) / dt;
+					}
+					return Vector3.down / 2;
 				}
 
 				_grounded = false;

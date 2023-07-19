@@ -7,6 +7,7 @@ using Core.AsyncTask;
 using Core.Infrastructure;
 using Game.Ground;
 using Game.Ground.Services;
+using Game.Ground.Services.Movement;
 using UnityEngine;
 using Zenject;
 
@@ -59,7 +60,6 @@ namespace Terrain.Scene.Ground
 			_container.Unbind<PlayerCharacterControlService>();
 			_container.Unbind<TerrainGravity>();
 			_container.Unbind<AccelerationService>();
-			// _container.Unbind<MovementService>();
 		}
 
 		private void CreateDependencies(DiContainer container)
@@ -71,7 +71,6 @@ namespace Terrain.Scene.Ground
 			container.Bind<PlayerCharacterControlService>().AsSingle().Lazy();
 			container.Bind<AccelerationService>().AsSingle().Lazy();
 			container.Bind<TerrainGravity>().FromInstance( _gravity ).AsSingle();
-			// container.Bind<MovementService>().AsSingle().Lazy();
 		}
 
 		private void InjectGameObjects(DiContainer container)

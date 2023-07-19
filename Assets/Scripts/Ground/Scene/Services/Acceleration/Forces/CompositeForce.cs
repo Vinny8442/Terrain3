@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Game.Ground.Services.Movement;
 using UnityEngine;
 
 namespace Game.Ground.Services
 {
-	public class CompositeForce : AccelerationService.IForceHandle, AccelerationService.IForce
+	public class CompositeForce : AccelerationService.IForce
 	{
 		protected readonly IEnumerable<AccelerationService.IForce> _forces;
 
@@ -16,7 +17,7 @@ namespace Game.Ground.Services
 		
 		public void Rotate(Quaternion rotation)
 		{
-			foreach (var force in _forces.OfType<AccelerationService.IForceHandle>())
+			foreach (var force in _forces.OfType<IDirection>())
 			{
 				force.Rotate(rotation);
 			}

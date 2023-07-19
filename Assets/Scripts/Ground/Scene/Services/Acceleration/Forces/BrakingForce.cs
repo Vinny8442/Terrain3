@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using Game.Ground.Services.Movement;
+using UnityEngine;
 
 namespace Game.Ground.Services
 {
-	public class BrakingForce : AccelerationService.IForceHandle, AccelerationService.IForce
+	public class BrakingForce : IDirection, AccelerationService.IForce
 	{
 		private readonly AccelerationService.VelocityProvider _velocityProvider;
 		private Vector3 _force;

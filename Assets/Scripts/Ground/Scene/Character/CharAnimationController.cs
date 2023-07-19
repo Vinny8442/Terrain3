@@ -1,10 +1,12 @@
-﻿using System;
-using Core;
+﻿using Core;
+using Game.Ground.Services;
+using Game.Ground.Services.Movement;
 using UnityEngine;
+using Zenject;
 
 namespace Game.Ground
 {
-	public class CharAnimationController : MonoBehaviour, IInitable
+	public class CharAnimationController : MonoBehaviour, IInjectable, IInitable, TerrainGravity.ITarget
 	{
 		[SerializeField] public CharacterController _charController;
 		[SerializeField] public Animator animator;
@@ -12,75 +14,74 @@ namespace Game.Ground
 		[SerializeField] private AnimationCurve _accelerationCurve;
 		[SerializeField] private float _rotationSpeed;
 		[SerializeField] private AnimationCurve _jumpAtPlaceCurve;
-
-		// [Range(0,1f)] public float StartAnimTime = 0.3f;
-		// [Range(0, 1f)] public float StopAnimTime = 0.15f;
-		// [Range(1, 10f)] public float RotationSpeed = 2f;
+		[SerializeField] private float _jumpAtPlaceForce;
 		
+		[Inject] private readonly AccelerationService _accelerationService;
+		[Inject] private readonly TerrainGravity _gravityService;
+		
+		private bool _isWalking = false;
+		private WalkMovement _walkMovement;
+		private AccelerationService.IForce _jumpForceHandle;
+
 		public bool IsGrounded => _charController.isGrounded;
-
-		public AnimationCurve Acceleration => _accelerationCurve;
-		public AnimationCurve JumpAtPlace => _jumpAtPlaceCurve;
-
-		public float RotationSpeed => _rotationSpeed;
-		
-		public float MaxSpeed => _forwardSpeed;
-
-		public void Move(Vector3 movement)
-		{
-			_charController.Move(movement);
-		}
 
 		public Vector3 WorldPosition => transform.position;
 
-		private void Update()
+		public void Jump()
 		{
-			if (_charController.isGrounded)
+			if (_jumpForceHandle is {Completed: false}) return;
+			
+			if (_isWalking)
 			{
-				// _fallin
+				animator.SetTrigger("JumpWalking");
+				_jumpForceHandle = _accelerationService.AddForce(this, new CompensationForce(new LinearForce(_charController.transform.forward * 5f, 0.4f), 0.3f));
+			}
+			else
+			{
+				animator.SetTrigger("JumpAtPlace");
+				_jumpForceHandle = _accelerationService.AddForce(this, new CurveForce(_charController.transform.up * _jumpAtPlaceForce, _jumpAtPlaceCurve));
 			}
 		}
 
-		private bool UpdateMove()
+		public void Walk(bool isWalking)
 		{
-			// var InputX = Input.GetAxis ("Horizontal");
-			// var InputZ = Input.GetAxis ("Vertical");
+			if (_isWalking != isWalking)
+			{
+				_isWalking = isWalking;
+				animator.SetBool("IsWalking", _isWalking);
+				if (_isWalking)
+				{
+					Debug.Log("start walk");
+					_walkMovement.Go();
+				}
+				else
+				{
+					_walkMovement.Idle();
+				}
+			}
+		}
+
+
+		public void Turn(float value)
+		{
+			Quaternion rotation = Quaternion.AngleAxis(value * _rotationSpeed, transform.up);
+			_charController.transform.rotation *= rotation;
+			_walkMovement.Rotate(rotation);
+		}
+
+		public void Init()
+		{
+			_gravityService.AddTarget(this);
 			
-			// var Speed = new Vector2(InputX, InputZ).sqrMagnitude;
-			// var Speed = InputZ;
-		
-			bool changed = false;
-			// Vector3 forwardSpeed = transform.forward * (_forwardSpeed * Speed * Time.deltaTime);
-			//
-			// if (Speed > 0.1f)
-			// {
-			// 	animator.SetFloat ("Blend", Speed, StartAnimTime, Time.deltaTime);
-			// 	_charController.Move(forwardSpeed);
-			// }
-			// else
-			// {
-			// 	animator.SetFloat ("Blend", Speed, StopAnimTime, Time.deltaTime);
-			// 	animator.GetCurrentAnimatorClipInfo()
-			// }
-			// changed = Speed > 0;
-
-			return changed;
+			_walkMovement = new WalkMovement(new CurveMovement(_charController.transform.forward * _forwardSpeed, _accelerationCurve), new SimpleMovement(Vector3.zero));
+			_accelerationService.AddMovement(this, _walkMovement);
 		}
-
-		private bool UpdateRotation()
-		{
-			// var InputX = Input.GetAxis ("Horizontal");
-			// if (InputX != 0)
-			// {
-			// 	Vector3 localRotationEuler = Quaternion.LookRotation(Vector3.right).eulerAngles * InputX * RotationSpeed * Time.deltaTime;
-			// 	transform.rotation *= Quaternion.Euler(localRotationEuler);
-			// 	return true;
-			// }
-			return false;
-		}
-
-		public void Init() { }
 
 		public void UnInit() { }
+		
+		public void ApplyMove(Vector3 movement)
+		{
+			_charController.Move(movement);
+		}
 	}
 }

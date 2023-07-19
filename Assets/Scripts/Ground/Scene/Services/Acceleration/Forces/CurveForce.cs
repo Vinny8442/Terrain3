@@ -1,9 +1,10 @@
 ﻿using System.Linq;
+using Game.Ground.Services.Movement;
 using UnityEngine;
 
 namespace Game.Ground.Services
 {
-	public class CurveForce : AccelerationService.IForceHandle, AccelerationService.IForce
+	public class CurveForce : AccelerationService.IForce
 	{
 		private readonly AnimationCurve _curve;
 		private readonly float _duration;
@@ -42,7 +43,7 @@ namespace Game.Ground.Services
 				return _force * _lastKey.value;
 			}
 				
-			Debug.Log($"Curve: {_time} {_curve.Evaluate(_time)} {_force * _curve.Evaluate(_time)}");
+			// Debug.Log($"Curve: {_time} {_curve.Evaluate(_time)} {_force * _curve.Evaluate(_time)}");
 
 			return _force * _curve.Evaluate(_time);
 		}

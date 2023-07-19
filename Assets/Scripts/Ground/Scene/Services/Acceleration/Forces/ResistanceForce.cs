@@ -1,16 +1,17 @@
-﻿using UnityEngine;
+﻿using Game.Ground.Services.Movement;
+using UnityEngine;
 
 namespace Game.Ground.Services
 {
-	public class ResistanceForce : AccelerationService.IForceHandle, AccelerationService.IForce
+	public class ResistanceForce : IDirection, AccelerationService.IForce
 	{
 		private readonly AccelerationService.IVelocityDataProvider _velocityProvider;
 		private readonly AccelerationService.IForce _source;
-		private readonly AccelerationService.ITarget _target;
+		private readonly IMovable _target;
 		private Vector3 _axis;
 		private readonly float _factor;
 
-		public ResistanceForce(AccelerationService.IVelocityDataProvider velocityProvider, AccelerationService.ITarget target, float factor, AccelerationService.IForce source)
+		public ResistanceForce(AccelerationService.IVelocityDataProvider velocityProvider, IMovable target, float factor, AccelerationService.IForce source)
 		{
 			_target = target;
 			_source = source;
