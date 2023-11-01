@@ -1,4 +1,5 @@
-﻿using Core;
+﻿using System.Collections.Generic;
+using Core;
 using Game.Ground.Services;
 using Game.Ground.Services.Movement;
 using UnityEngine;
@@ -8,6 +9,13 @@ namespace Game.Ground
 {
 	public class CharAnimationController : MonoBehaviour, IInjectable, IInitable, TerrainGravity.ITarget
 	{
+		private enum AnimationTrigger
+		{
+			JumpAtPlace = 1,
+			JumpWalking,
+			IsWalking
+		}
+
 		[SerializeField] public CharacterController _charController;
 		[SerializeField] public Animator animator;
 		[SerializeField] private float _forwardSpeed = 1;
@@ -15,6 +23,7 @@ namespace Game.Ground
 		[SerializeField] private float _rotationSpeed;
 		[SerializeField] private AnimationCurve _jumpAtPlaceCurve;
 		[SerializeField] private float _jumpAtPlaceForce;
+		[SerializeField] private float _jumpWalkingForce;
 		
 		[Inject] private readonly AccelerationService _accelerationService;
 		[Inject] private readonly TerrainGravity _gravityService;
@@ -33,12 +42,15 @@ namespace Game.Ground
 			
 			if (_isWalking)
 			{
-				animator.SetTrigger("JumpWalking");
-				_jumpForceHandle = _accelerationService.AddForce(this, new CompensationForce(new LinearForce(_charController.transform.forward * 5f, 0.4f), 0.3f));
+				animator.SetTrigger(AnimationTrigger.JumpWalking.ToString());
+				_jumpForceHandle = _accelerationService.AddForce(this, new CompositeForce(new AccelerationService.IForce[] {
+					new LinearForce(_charController.transform.up * _jumpWalkingForce, 0.4f),
+					new CompensationForce(new LinearForce(_charController.transform.forward * 7.5f, 0.4f), 0.4f),
+				}));
 			}
 			else
 			{
-				animator.SetTrigger("JumpAtPlace");
+				animator.SetTrigger(AnimationTrigger.JumpAtPlace.ToString());
 				_jumpForceHandle = _accelerationService.AddForce(this, new CurveForce(_charController.transform.up * _jumpAtPlaceForce, _jumpAtPlaceCurve));
 			}
 		}
@@ -48,7 +60,7 @@ namespace Game.Ground
 			if (_isWalking != isWalking)
 			{
 				_isWalking = isWalking;
-				animator.SetBool("IsWalking", _isWalking);
+				animator.SetBool(AnimationTrigger.IsWalking.ToString(), _isWalking);
 				if (_isWalking)
 				{
 					Debug.Log("start walk");
