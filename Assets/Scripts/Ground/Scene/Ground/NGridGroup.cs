@@ -148,6 +148,7 @@ namespace Game.Ground
             foreach ( var index in EnumerateIndexes( ) )
             {
                 var grid = _prefabStorage.InstantiateAs<SectorView>( "SectorView", transform );
+                grid.name = $"SectorView({index.x}, {index.y})";
                 grid.SetIndex( index );
                 _sectors.Add( grid );
             }
