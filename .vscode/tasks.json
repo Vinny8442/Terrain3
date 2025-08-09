@@ -1,0 +1,69 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build Unity Project",
+            "type": "shell",
+            "command": "/Applications/Unity/Unity.app/Contents/MacOS/Unity",
+            "args": [
+                "-projectPath",
+                "${workspaceFolder}",
+                "-buildTarget",
+                "StandaloneOSX",
+                "-quit",
+                "-batchmode",
+                "-nographics"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Generate Unity Project Files",
+            "type": "shell",
+            "command": "/Applications/Unity/Unity.app/Contents/MacOS/Unity",
+            "args": [
+                "-projectPath",
+                "${workspaceFolder}",
+                "-executeMethod",
+                "UnityEditor.SyncVS.SyncSolution",
+                "-quit",
+                "-batchmode",
+                "-nographics"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Clean Project",
+            "type": "shell",
+            "command": "rm",
+            "args": [
+                "-rf",
+                "Library",
+                "Temp",
+                "Logs",
+                "obj"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        }
+    ]
+}

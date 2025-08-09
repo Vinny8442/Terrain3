@@ -1,0 +1,144 @@
+{
+    "MonoBehaviour Class": {
+        "prefix": "mb",
+        "body": [
+            "using UnityEngine;",
+            "",
+            "public class ${1:ClassName} : MonoBehaviour",
+            "{",
+            "\tvoid Start()",
+            "\t{",
+            "\t\t$0",
+            "\t}",
+            "",
+            "\tvoid Update()",
+            "\t{",
+            "\t\t",
+            "\t}",
+            "}"
+        ],
+        "description": "Creates a new MonoBehaviour class"
+    },
+    "ScriptableObject Class": {
+        "prefix": "so",
+        "body": [
+            "using UnityEngine;",
+            "",
+            "[CreateAssetMenu(fileName = \"${1:New${2:ClassName}}\", menuName = \"${3:MenuName}/${2:ClassName}\")]",
+            "public class ${2:ClassName} : ScriptableObject",
+            "{",
+            "\t$0",
+            "}"
+        ],
+        "description": "Creates a new ScriptableObject class"
+    },
+    "Singleton MonoBehaviour": {
+        "prefix": "singleton",
+        "body": [
+            "using UnityEngine;",
+            "",
+            "public class ${1:ClassName} : MonoBehaviour",
+            "{",
+            "\tpublic static ${1:ClassName} Instance { get; private set; }",
+            "",
+            "\tvoid Awake()",
+            "\t{",
+            "\t\tif (Instance != null && Instance != this)",
+            "\t\t{",
+            "\t\t\tDestroy(this);",
+            "\t\t}",
+            "\t\telse",
+            "\t\t{",
+            "\t\t\tInstance = this;",
+            "\t\t\tDontDestroyOnLoad(gameObject);",
+            "\t\t}",
+            "\t}",
+            "",
+            "\tvoid Start()",
+            "\t{",
+            "\t\t$0",
+            "\t}",
+            "}"
+        ],
+        "description": "Creates a singleton MonoBehaviour class"
+    },
+    "Coroutine": {
+        "prefix": "cor",
+        "body": [
+            "private IEnumerator ${1:CoroutineName}()",
+            "{",
+            "\t$0",
+            "\tyield return null;",
+            "}"
+        ],
+        "description": "Creates a coroutine method"
+    },
+    "Unity Event Function": {
+        "prefix": "uevent",
+        "body": [
+            "void ${1|Start,Awake,Update,FixedUpdate,LateUpdate,OnEnable,OnDisable,OnDestroy,OnTriggerEnter,OnTriggerExit,OnCollisionEnter,OnCollisionExit|}()",
+            "{",
+            "\t$0",
+            "}"
+        ],
+        "description": "Unity event function"
+    },
+    "Debug Log": {
+        "prefix": "log",
+        "body": [
+            "Debug.Log(\"$1\");"
+        ],
+        "description": "Debug.Log statement"
+    },
+    "SerializeField": {
+        "prefix": "sf",
+        "body": [
+            "[SerializeField] private ${1:type} ${2:variableName};"
+        ],
+        "description": "SerializeField variable"
+    },
+    "Header Attribute": {
+        "prefix": "header",
+        "body": [
+            "[Header(\"${1:Header Name}\")]",
+            "$0"
+        ],
+        "description": "Header attribute"
+    },
+    "Zenject Inject": {
+        "prefix": "inject",
+        "body": [
+            "[Inject] private ${1:Type} ${2:variableName};"
+        ],
+        "description": "Zenject inject field"
+    },
+    "Zenject Constructor Inject": {
+        "prefix": "cinject",
+        "body": [
+            "private readonly ${1:Type} ${2:variableName};",
+            "",
+            "[Inject]",
+            "public ${3:ClassName}(${1:Type} ${2:variableName})",
+            "{",
+            "\tthis.${2:variableName} = ${2:variableName};",
+            "}"
+        ],
+        "description": "Zenject constructor injection"
+    },
+    "Zenject MonoInstaller": {
+        "prefix": "installer",
+        "body": [
+            "using Zenject;",
+            "using UnityEngine;",
+            "",
+            "public class ${1:ClassName}Installer : MonoInstaller",
+            "{",
+            "\tpublic override void InstallBindings()",
+            "\t{",
+            "\t\t$0",
+            "\t}",
+            "}"
+        ],
+        "description": "Zenject MonoInstaller"
+    }
+}
