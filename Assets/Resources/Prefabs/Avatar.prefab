@@ -320,6 +320,7 @@ MonoBehaviour:
   _charController: {fileID: 9062863894537307216}
   animator: {fileID: 7054208668527873683}
   _forwardSpeed: 1.3
+  _runSpeed: 3
   _accelerationCurve:
     serializedVersion: 2
     m_Curve:

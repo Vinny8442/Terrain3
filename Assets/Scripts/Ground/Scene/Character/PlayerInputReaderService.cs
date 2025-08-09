@@ -20,10 +20,11 @@ namespace Game.Ground
 			var inputX = Input.GetAxis ("Horizontal");
 			var inputZ = Input.GetAxis ("Vertical");
 			var jump = Input.GetKeyDown(KeyCode.Space);
+			var run = Input.GetKey(KeyCode.LeftShift);
 
 			if (inputX != 0 || inputZ != 0 || jump)
 			{
-				OnInput?.Invoke(new InputData(inputZ, inputX, jump, dt));
+				OnInput?.Invoke(new InputData(inputZ, inputX, jump, run, dt));
 			} 
 		}
 
@@ -42,12 +43,14 @@ namespace Game.Ground
 			public readonly float Forward;
 			public readonly float Side;
 			public readonly bool Jump;
+			public readonly bool Run;
 			public readonly float DT;
 
-			public InputData(float forward, float side, bool jump, float dt)
+			public InputData(float forward, float side, bool jump, bool run, float dt)
 			{
 				DT = dt;
 				Jump = jump;
+				Run = run;
 				Side = side;
 				Forward = forward;
 			}

@@ -6,7 +6,7 @@ namespace Game.Ground
 {
 	public class PlayerCharacterControlService : IUpdateTarget, IInitable
 	{
-		
+
 		private readonly PlayerInputReaderService _input;
 		private readonly IUpdater _updater;
 		private readonly SectorControlService _sectorControl;
@@ -16,8 +16,8 @@ namespace Game.Ground
 		private CharAnimationController _charController;
 
 		public PlayerCharacterControlService(
-			PlayerInputReaderService input, 
-			IUpdater updater, 
+			PlayerInputReaderService input,
+			IUpdater updater,
 			SectorControlService sectorControl)
 		{
 			_updater = updater;
@@ -49,6 +49,8 @@ namespace Game.Ground
 			{
 				_charController.Walk(data.Forward > WalkingThreshold);
 			}
+
+			_charController.SetRunning(data.Run);
 
 			if (data.Jump)
 			{
