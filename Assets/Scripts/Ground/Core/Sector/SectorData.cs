@@ -6,10 +6,10 @@ namespace Game.Ground
 	{
 		public Index2 Index;
 
-		public readonly int SubDivs;
+        private readonly int SubDivs;
 		public int Density { get; private set; } = 0;
 
-		public readonly float[] Data;
+        private readonly float[] Data;
 
 		public SectorData(Index2 index, int density, float[] data)
 		{
@@ -29,6 +29,6 @@ namespace Game.Ground
 			int j = (int) (relY * SubDivs);
 			return Data[i * (SubDivs + 1) + j];
 		}
-		
+
 	}
 }
