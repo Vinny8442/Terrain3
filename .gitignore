@@ -43,6 +43,10 @@ Thumbs.db
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
 
+# Unity Layout files
+UserSettings/Layouts/
+**/default-*.dwlt
+
 # MemoryCaptures can get excessive in size
 /[Mm]emoryCaptures/
 
