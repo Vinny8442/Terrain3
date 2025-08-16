@@ -49,8 +49,7 @@ namespace Game.Ground
             grassInstance.transform.localPosition = worldPosition;
 
             // Добавляем небольшую случайную ротацию для разнообразия
-            grassInstance.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
-            // grassInstance.transform.rotation = Quaternion.Euler(0, Random.Range(0f, 360f), 0);
+            grassInstance.transform.rotation = Quaternion.Euler(0, Random.Range(0f, 360f), 0);
 
             _instantiatedGrass.Add(grassInstance);
         }
