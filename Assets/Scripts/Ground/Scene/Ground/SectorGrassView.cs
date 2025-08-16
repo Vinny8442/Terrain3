@@ -42,23 +42,23 @@ namespace Game.Ground
             var randomPrefab = _grassPrefabs[Random.Range(0, _grassPrefabs.Count)];
 
             // Преобразуем индекс сетки в мировые координаты
-            var worldPosition = GridIndexToWorldPosition(grassIndex, data);
+            var worldPosition = GridIndexToPosition(grassIndex, data);
 
             // Инстанцируем префаб
             var grassInstance = _prefabStorage.Instantiate(randomPrefab, transform);
-            grassInstance.transform.position = worldPosition;
+            grassInstance.transform.localPosition = worldPosition;
 
             // Добавляем небольшую случайную ротацию для разнообразия
-            grassInstance.transform.localScale = new Vector3(0.01f, 1f, 0.01f);
+            grassInstance.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
             // grassInstance.transform.rotation = Quaternion.Euler(0, Random.Range(0f, 360f), 0);
 
             _instantiatedGrass.Add(grassInstance);
         }
 
-        private Vector3 GridIndexToWorldPosition(Index2 grassIndex, SectorData data)
+        private Vector3 GridIndexToPosition(Index2 grassIndex, SectorData data)
         {
             // Размер сектора (предполагаем, что это единица)
-            float sectorSize = 100f;
+            float sectorSize = 1f;
             int subdivs = 1 << data.Density;
 
             // Преобразуем индекс в относительные координаты (0-1)

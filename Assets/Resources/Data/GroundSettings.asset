@@ -15,11 +15,11 @@ MonoBehaviour:
   Noises:
   - Scale: 100
     Offset: {x: 3.93, y: 0}
-    Amplitude: 50
+    Amplitude: 0.5
   - Scale: 20
     Offset: {x: 0, y: 0}
-    Amplitude: 6
+    Amplitude: 0.06
   - Scale: 5
     Offset: {x: 0, y: 0}
-    Amplitude: 0.8
+    Amplitude: 0.008
   SectorSize: 100
