@@ -79,7 +79,7 @@ GameObject:
   - component: {fileID: 1931721728351738500}
   m_Layer: 0
   m_Name: Camera
-  m_TagString: Untagged
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -92,8 +92,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3728872369084649495}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.0462544, y: -0, z: -0, w: 0.99892974}
-  m_LocalPosition: {x: 0, y: 1.329998, z: -4.31}
+  m_LocalRotation: {x: 0.000000007441332, y: -0.04981371, z: 3.7114112e-10, w: 0.99875855}
+  m_LocalPosition: {x: 0.5, y: 0.9300003, z: -5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -178,7 +178,7 @@ MonoBehaviour:
   m_RendererIndex: -1
   m_VolumeLayerMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 4294967295
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
   m_RenderPostProcessing: 0
@@ -480,8 +480,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5702954662735774917}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.0462544, y: -0, z: -0, w: 0.99892974}
-  m_LocalPosition: {x: 0, y: 1.329998, z: -4.31}
+  m_LocalRotation: {x: 0.000000007441332, y: -0.04981371, z: 3.7114112e-10, w: 0.99875855}
+  m_LocalPosition: {x: 0.5, y: 0.9300003, z: -5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -538,7 +538,7 @@ GameObject:
   - component: {fileID: 2379148212524002262}
   - component: {fileID: 487897510123846324}
   - component: {fileID: 6037400567049754464}
-  - component: {fileID: 2969832721877931944}
+  - component: {fileID: 5518833112548861206}
   m_Layer: 0
   m_Name: cm
   m_TagString: Untagged
@@ -600,7 +600,7 @@ MonoBehaviour:
   m_BiasX: 0
   m_BiasY: 0
   m_CenterOnActivate: 1
---- !u!114 &2969832721877931944
+--- !u!114 &5518833112548861206
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -613,17 +613,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Damping: {x: 0.1, y: 0.5, z: 0.3}
-  ShoulderOffset: {x: 0, y: -0.4, z: 0}
-  VerticalArmLength: 0.8
+  ShoulderOffset: {x: 0.5, y: -0.4, z: 0}
+  VerticalArmLength: 0.4
   CameraSide: 1
-  CameraDistance: 4.31
+  CameraDistance: 5
   CameraCollisionFilter:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 0
   IgnoreTag: 
   CameraRadius: 0.2
   DampingIntoCollision: 0
-  DampingFromCollision: 0
+  DampingFromCollision: 2
 --- !u!1001 &581554851923720198
 PrefabInstance:
   m_ObjectHideFlags: 0
