@@ -1,33 +1,40 @@
 ﻿using System;
+using UnityEditor.UI;
 
 namespace Game.Ground
 {
 	public class SectorData
 	{
+		public const int MaxDensity = 7;
+
 		public Index2 Index;
 
-        private readonly int SubDivs;
+        private readonly int _subDivs;
 		public int Density { get; private set; } = 0;
+        public readonly SectorGrassData GrassData;
 
-        private readonly float[] Data;
+        private readonly float[] _data;
 
 		public SectorData(Index2 index, int density, float[] data)
 		{
 			Index = index;
-			SubDivs = 1 << density;
 			Density = density;
-			Data = data;
+            GrassData = new(data, Density);
+			_subDivs = 1 << density;
+			_data = data;
+
 		}
 
-		public float GetHeight(float relX, float relY)
+
+        public float GetHeight(float relX, float relY)
 		{
-			if (Data == null)
+			if (_data == null)
 			{
 				throw new Exception($"SectorData I:{Index} D:{Density}: Data not generated yet!");
 			}
-			int i = (int) (relX * SubDivs);
-			int j = (int) (relY * SubDivs);
-			return Data[i * (SubDivs + 1) + j];
+			int i = (int) (relX * _subDivs);
+			int j = (int) (relY * _subDivs);
+			return _data[i * (_subDivs + 1) + j];
 		}
 
 	}

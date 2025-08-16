@@ -9,7 +9,6 @@ namespace Game.Ground
 	public class SectorControlService : IInitable
 	{
 		private static readonly Vector2 SectorSize = Vector2.one;
-		private const int MaxDensity = 7;
 		private const int Radius = 3;
 
 		private readonly SettingsStorage _settings;
@@ -84,10 +83,10 @@ namespace Game.Ground
 			}
 		}
 
-		private static int GetDensityForIndex( Index2 index )
-		{
-			return Mathf.Clamp( 8 - index.R, 0, MaxDensity );
-		}
+			private static int GetDensityForIndex( Index2 index )
+	{
+		return Mathf.Clamp( 8 - index.R, 0, SectorData.MaxDensity );
+	}
 
 		private Index2 GetSectorIndex( float x, float y )
 		{

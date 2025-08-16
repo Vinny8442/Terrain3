@@ -48,6 +48,20 @@ namespace Core
 			return result;
 		}
 
+		public GameObject Instantiate(GameObject prefab, Transform parent = null)
+		{
+			var gameObject = GameObject.Instantiate(prefab, parent);
+			InjectAndInit(gameObject);
+			return gameObject;
+		}
+
+		public T InstantiateAs<T>(GameObject prefab, Transform parent = null) where T : MonoBehaviour
+		{
+			var gameObject = Instantiate(prefab, parent);
+			var component = gameObject.GetComponent<T>();
+			return component;
+		}
+
 		public void InjectAndInit( GameObject gameObject )
 		{
 			var injectableComponents = gameObject.GetComponentsInChildren<IInjectable>();

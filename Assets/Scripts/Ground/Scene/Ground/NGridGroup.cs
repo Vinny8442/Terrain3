@@ -13,7 +13,6 @@ namespace Game.Ground
 {
     public class NGridGroup : MonoBehaviour, IInjectable, IInitable, ICoroutineRunner
     {
-        private const int MaxDensity = 7;
         private static readonly Vector2 SectorSize = Vector2.one;
         private readonly List<SectorView> _sectors = new List<SectorView>( );
         private Index2 _centerSector;
@@ -83,7 +82,7 @@ namespace Game.Ground
                 {
                     var sectorData = _sectorControl.GetSectorData( dataIndex );
                     sectorView.SetData( density, sectorData );
-                    sectorView.SetInteractable( density == MaxDensity );
+                    sectorView.SetInteractable( density == SectorData.MaxDensity );
                     viewsToRebuild.Add( sectorView );
                 }
             }
@@ -164,7 +163,7 @@ namespace Game.Ground
 
         private static int GetDensityForIndex( Index2 index )
         {
-            return Mathf.Clamp( 8 - index.R, 0, MaxDensity );
+            return Mathf.Clamp( 8 - index.R, 0, SectorData.MaxDensity );
         }
     }
 }

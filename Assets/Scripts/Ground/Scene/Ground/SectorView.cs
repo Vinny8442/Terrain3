@@ -6,7 +6,7 @@ namespace Game.Ground
 	public class SectorView : NGrid, IInitable
 	{
 		[SerializeField] private MeshCollider _collider;
-		
+		[SerializeField] private SectorGrassView _grassView;
 		public Index2 Index { get; private set; }
 
 		public Index2 DataIndex { get; private set; }
@@ -15,7 +15,7 @@ namespace Game.Ground
 		public SectorData Data { get; private set; }
 
 		public bool Interactable { get; private set; }
-		
+
 		public void Init()
 		{
 			Index = new Index2();
@@ -31,7 +31,7 @@ namespace Game.Ground
 		{
 			Interactable = value;
 		}
-		
+
 		public void Rebuild()
 		{
 			Generate(SubDivs, SubDivs);
@@ -41,13 +41,13 @@ namespace Game.Ground
 		{
 			_collider.sharedMesh = Interactable ? Mesh : null;
 		}
-		
+
 		protected override float GetHeight(int x, int y)
 		{
 			var height = Data.GetHeight((float) x / SubDivs, (float) y / SubDivs);
 			return height;
 		}
-		
+
 
 		public void SetIndex(Index2 index)
 		{
@@ -61,7 +61,9 @@ namespace Game.Ground
 			Data = data;
 			SubDivs = 1 << density;
 			DataIndex = data.Index;
-		}
+
+            _grassView.SetData(data);
+        }
 
 	}
 }
