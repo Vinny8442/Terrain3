@@ -15,18 +15,27 @@ namespace Game.Ground
 
         public void SetData(SectorData data)
         {
-            ClearGrass();
+            // Очищаем только если уже есть трава
+            if (_instantiatedGrass.Count > 0)
+            {
+                ClearGrass();
+            }
 
+            // Создаем траву только если есть данные о траве
             if (data?.GrassData?.GrassPositions == null || _grassPrefabs == null || _grassPrefabs.Count == 0)
                 return;
 
-            foreach (var grassIndex in data.GrassData.GrassPositions)
+            // Создаем траву только если в данных есть позиции для травы
+            if (data.GrassData.GrassPositions.Count > 0)
             {
-                InstantiateGrassAt(grassIndex, data);
+                foreach (var grassIndex in data.GrassData.GrassPositions)
+                {
+                    InstantiateGrassAt(grassIndex, data);
+                }
             }
         }
 
-        private void ClearGrass()
+        public void ClearGrass()
         {
             foreach (var grass in _instantiatedGrass)
             {

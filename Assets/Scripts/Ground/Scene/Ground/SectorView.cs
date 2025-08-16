@@ -15,6 +15,7 @@ namespace Game.Ground
 		public SectorData Data { get; private set; }
 
 		public bool Interactable { get; private set; }
+		private bool _isCentral = false;
 
 		public void Init()
 		{
@@ -62,7 +63,23 @@ namespace Game.Ground
 			SubDivs = 1 << density;
 			DataIndex = data.Index;
 
-            _grassView.SetData(data);
+			// Определяем, является ли сектор центральным (Index == (0,0))
+			bool newIsCentral = Index is { x: 0, y: 0 };
+            if (_isCentral == newIsCentral) return;
+
+			// Если сектор перестал быть центральным, очищаем траву
+			if (_isCentral && !newIsCentral)
+			{
+				_grassView.ClearGrass();
+			}
+
+			_isCentral = newIsCentral;
+
+			// Устанавливаем данные в grass view только если это центральный сектор
+			if (_isCentral)
+			{
+				_grassView.SetData(data);
+			}
         }
 
 	}
