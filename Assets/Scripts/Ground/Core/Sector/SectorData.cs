@@ -12,6 +12,7 @@ namespace Game.Ground
         private readonly int _subDivs;
 		public int Density { get; private set; } = 0;
         public readonly SectorGrassData GrassData;
+        public readonly SectorTreesData TreesData;
 
         private readonly float[] _data;
 
@@ -20,6 +21,7 @@ namespace Game.Ground
 			Index = index;
 			Density = density;
             GrassData = new(data, Density);
+            TreesData = new(data, Density, Index.GetHashCode());
 			_subDivs = 1 << density;
 			_data = data;
 

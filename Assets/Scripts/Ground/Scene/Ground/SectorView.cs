@@ -7,6 +7,7 @@ namespace Game.Ground
 	{
 		[SerializeField] private MeshCollider _collider;
 		[SerializeField] private SectorGrassView _grassView;
+		[SerializeField] private SectorTreesView _treesView;
 		public Index2 Index { get; private set; }
 
 		public Index2 DataIndex { get; private set; }
@@ -63,10 +64,8 @@ namespace Game.Ground
 			SubDivs = 1 << density;
 			DataIndex = data.Index;
 
-            Debug.Log($"Position: {Index} Data: {DataIndex} Density: {Density}");
 			// Определяем, является ли сектор центральным (Index == (0,0))
 			bool newIsCentral = Index is { x: 0, y: 0 };
-            if (_isCentral == newIsCentral) return;
 
 			// Если сектор перестал быть центральным, очищаем траву
 			if (_isCentral && !newIsCentral)
@@ -80,6 +79,16 @@ namespace Game.Ground
 			if (_isCentral)
 			{
 				_grassView.SetData(data);
+			}
+
+			// Деревья отображаются только для секторов с максимальной плотностью
+			if (density == SectorData.MaxDensity)
+			{
+				_treesView.SetData(data);
+			}
+			else
+			{
+				_treesView.ClearTrees();
 			}
         }
 
