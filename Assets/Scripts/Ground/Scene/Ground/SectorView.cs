@@ -63,6 +63,7 @@ namespace Game.Ground
 			SubDivs = 1 << density;
 			DataIndex = data.Index;
 
+            Debug.Log($"Position: {Index} Data: {DataIndex} Density: {Density}");
 			// Определяем, является ли сектор центральным (Index == (0,0))
 			bool newIsCentral = Index is { x: 0, y: 0 };
             if (_isCentral == newIsCentral) return;
