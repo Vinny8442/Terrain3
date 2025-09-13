@@ -3,11 +3,13 @@ using UnityEngine;
 
 namespace Game.Ground
 {
-	public class SectorView : NGrid, IInitable
+	public class SectorView : MonoBehaviour, IInitable
 	{
-		[SerializeField] private MeshCollider _collider;
+		[SerializeField] private SectorGroundView _groundView;
 		[SerializeField] private SectorGrassView _grassView;
 		[SerializeField] private SectorTreesView _treesView;
+
+        public SectorGroundView Ground => _groundView;
 		public Index2 Index { get; private set; }
 
 		public Index2 DataIndex { get; private set; }
@@ -29,28 +31,6 @@ namespace Game.Ground
 		{
 		}
 
-		public void SetInteractable(bool value)
-		{
-			Interactable = value;
-		}
-
-		public void Rebuild()
-		{
-			Generate(SubDivs, SubDivs);
-		}
-
-		public void RebuildCollider()
-		{
-			_collider.sharedMesh = Interactable ? Mesh : null;
-		}
-
-		protected override float GetHeight(int x, int y)
-		{
-			var height = Data.GetHeight((float) x / SubDivs, (float) y / SubDivs);
-			return height;
-		}
-
-
 		public void SetIndex(Index2 index)
 		{
 			Index = index;
@@ -63,6 +43,8 @@ namespace Game.Ground
 			Data = data;
 			SubDivs = 1 << density;
 			DataIndex = data.Index;
+
+            _groundView.SetData(density, data);
 
 			// Определяем, является ли сектор центральным (Index == (0,0))
 			bool newIsCentral = Index is { x: 0, y: 0 };

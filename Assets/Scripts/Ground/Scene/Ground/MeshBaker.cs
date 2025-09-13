@@ -13,7 +13,7 @@ namespace Game.Ground
 	{
 
 		private IAsyncTask _currentTask;
-		
+
 		public async IAsyncTask Bake(IEnumerable<SectorView> meshes)
 		{
 			if (_currentTask != null)
@@ -42,7 +42,7 @@ namespace Game.Ground
 			int i = 0;
 			foreach ( SectorView sector in sectors )
 			{
-				int instanceID = sector.Mesh.GetInstanceID( );
+				int instanceID = sector.Ground.Mesh.GetInstanceID( );
 				IAsyncTask thread = new ThreadAsyncTask( ( ) =>
 				{
 					try
@@ -84,7 +84,7 @@ namespace Game.Ground
 		// 		Debug.LogError(e);
 		// 	}
 		// }
-		
+
 		// private struct BakeJob : IJobParallelFor
 		// {
 		// 	private NativeArray<int> meshIds;

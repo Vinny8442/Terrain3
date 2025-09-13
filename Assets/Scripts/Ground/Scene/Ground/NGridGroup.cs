@@ -82,7 +82,7 @@ namespace Game.Ground
                 {
                     var sectorData = _sectorControl.GetSectorData( dataIndex );
                     sectorView.SetData( density, sectorData );
-                    sectorView.SetInteractable( density == SectorData.MaxDensity );
+                    sectorView.Ground.SetInteractable( density == SectorData.MaxDensity );
                     viewsToRebuild.Add( sectorView );
                 }
             }
@@ -110,7 +110,7 @@ namespace Game.Ground
             int i = 0;
             foreach ( var sectorView in sectors )
             {
-                sectorView.Rebuild( );
+                sectorView.Ground.Rebuild( );
                 i++;
                 if ( timer.ElapsedMilliseconds >= 6 )
                 {
@@ -126,7 +126,7 @@ namespace Game.Ground
         private void RebuildColliders( List<SectorView> sectors )
         {
             sectors.Sort( ( a, b ) => b.Density.CompareTo( a.Density ) );
-            sectors.ForEach( x => x.RebuildCollider( ) );
+            sectors.ForEach( x => x.Ground.RebuildCollider( ) );
         }
 
         private IEnumerable<Index2> EnumerateIndexes( )
@@ -157,7 +157,7 @@ namespace Game.Ground
         {
             foreach ( var grid in _sectors )
             {
-                grid.transform.localPosition = new Vector3( grid.Index.x, 0, grid.Index.y );
+                grid.transform.localPosition = Vector3.Scale(new Vector3( grid.Index.x, 0, grid.Index.y ), grid.Ground.transform.localScale);
             }
         }
 
