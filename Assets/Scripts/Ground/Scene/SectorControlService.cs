@@ -42,7 +42,7 @@ namespace Game.Ground
 			Index2 newCenterSector = GetSectorIndex( position.x, position.z );
 			if ( newCenterSector != _centerSectorIndex )
 			{
-				UpdateCenterIndex( newCenterSector ).ThrowException( ); 
+				UpdateCenterIndex( newCenterSector ).ThrowException( );
 			}
 		}
 
@@ -83,10 +83,10 @@ namespace Game.Ground
 			}
 		}
 
-			private static int GetDensityForIndex( Index2 index )
-	{
-		return Mathf.Clamp( 8 - index.R, 0, SectorData.MaxDensity );
-	}
+        private static int GetDensityForIndex(Index2 index)
+        {
+            return Mathf.Clamp(8 - index.R, 0, SectorData.MaxDensity);
+        }
 
 		private Index2 GetSectorIndex( float x, float y )
 		{
@@ -95,7 +95,7 @@ namespace Game.Ground
 
 		public void EditorMoveCenter( Index2 delta )
 		{
-			UpdateCenterIndex( _centerSectorIndex + delta ); 
+			UpdateCenterIndex( _centerSectorIndex + delta );
 		}
 
 		public void Init()
@@ -106,7 +106,7 @@ namespace Game.Ground
 
 			HandleCharacterPositionUpdated( Vector3.zero );
 		}
-		
+
 		public void UnInit()
 		{
 		}

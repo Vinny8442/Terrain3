@@ -21,6 +21,11 @@ namespace Game.Ground
                 ClearTrees();
             }
 
+            if (!enabled)
+            {
+                return;
+            }
+
             // Создаем деревья только если есть данные и префабы
             if (data?.TreesData?.TreePositions == null || _treePrefabs == null || _treePrefabs.Count == 0)
                 return;
@@ -30,7 +35,7 @@ namespace Game.Ground
             {
                 foreach (var treePosition in data.TreesData.TreePositions)
                 {
-                    InstantiateTreeAt(treePosition);
+                    InstantiateTreeAt(treePosition, data);
                 }
             }
         }
@@ -45,15 +50,18 @@ namespace Game.Ground
             _instantiatedTrees.Clear();
         }
 
-        private void InstantiateTreeAt(SectorTreesData.TreePosition treePosition)
+        private void InstantiateTreeAt(SectorTreesData.TreePosition treePosition, SectorData sectorData)
         {
             // Выбираем случайный префаб из списка
             var randomPrefab = _treePrefabs[Random.Range(0, _treePrefabs.Count)];
 
+            // Вычисляем высоту непосредственно при инстанцировании
+            float height = sectorData.GetHeight(treePosition.RelativeX, treePosition.RelativeY);
+
             // Преобразуем относительные координаты в локальные
             var localPosition = new Vector3(
                 treePosition.RelativeX,
-                treePosition.Height,
+                height,
                 treePosition.RelativeY
             );
 

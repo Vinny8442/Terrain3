@@ -8,6 +8,7 @@ namespace Game.Ground
     public class SectorGrassView : MonoBehaviour, IInjectable
     {
         [SerializeField] private List<GameObject> _grassPrefabs;
+        [SerializeField] private int _grassCount = 1000;
 
         [Inject] private PrefabStorage _prefabStorage;
 
@@ -28,9 +29,12 @@ namespace Game.Ground
             // Создаем траву только если в данных есть позиции для травы
             if (data.GrassData.GrassPositions.Count > 0)
             {
-                foreach (var grassIndex in data.GrassData.GrassPositions)
+                // Используем настраиваемое количество травы, но не больше чем доступно в данных
+                int grassToCreate = Mathf.Min(_grassCount, data.GrassData.GrassPositions.Count);
+                
+                for (int i = 0; i < grassToCreate; i++)
                 {
-                    InstantiateGrassAt(grassIndex, data);
+                    InstantiateGrassAt(data.GrassData.GrassPositions[i], data);
                 }
             }
         }
@@ -45,43 +49,32 @@ namespace Game.Ground
             _instantiatedGrass.Clear();
         }
 
-        private void InstantiateGrassAt(Index2 grassIndex, SectorData data)
+        private void InstantiateGrassAt(SectorGrassData.GrassPosition grassPosition, SectorData sectorData)
         {
             // Выбираем случайный префаб из списка
             var randomPrefab = _grassPrefabs[Random.Range(0, _grassPrefabs.Count)];
 
-            // Преобразуем индекс сетки в мировые координаты
-            var worldPosition = GridIndexToPosition(grassIndex, data);
+            // Вычисляем высоту непосредственно при инстанцировании
+            float height = sectorData.GetHeight(grassPosition.RelativeX, grassPosition.RelativeY);
+
+            // Преобразуем относительные координаты в локальные
+            var localPosition = new Vector3(
+                grassPosition.RelativeX,
+                height,
+                grassPosition.RelativeY
+            );
 
             // Инстанцируем префаб
             var grassInstance = _prefabStorage.Instantiate(randomPrefab, transform);
-            grassInstance.transform.localPosition = worldPosition;
+            grassInstance.transform.localPosition = localPosition;
 
-            // Добавляем небольшую случайную ротацию для разнообразия
-            grassInstance.transform.rotation = Quaternion.Euler(0, Random.Range(0f, 360f), 0);
+            // Устанавливаем поворот
+            grassInstance.transform.rotation = Quaternion.Euler(0, grassPosition.Rotation, 0);
 
             _instantiatedGrass.Add(grassInstance);
         }
 
-        private Vector3 GridIndexToPosition(Index2 grassIndex, SectorData data)
-        {
-            // Размер сектора (предполагаем, что это единица)
-            float sectorSize = 1f;
-            int subdivs = 1 << data.Density;
-
-            // Преобразуем индекс в относительные координаты (0-1)
-            float relX = (float)grassIndex.x / subdivs;
-            float relY = (float)grassIndex.y / subdivs;
-
-            // Преобразуем в локальные координаты сектора
-            float localX = relX * sectorSize;
-            float localZ = relY * sectorSize;
-
-            // Получаем высоту в этой точке
-            float height = data.GetHeight(relX, relY);
-
-            return new Vector3(localX, height, localZ);
-        }
+        // Метод больше не нужен, так как мы работаем напрямую с относительными координатами
 
         private void OnDestroy()
         {

@@ -16,11 +16,11 @@ namespace Game.Ground
 
         private readonly float[] _data;
 
-		public SectorData(Index2 index, int density, float[] data)
+		public SectorData(Index2 index, int density, float[] data, int grassCount = 1000)
 		{
 			Index = index;
 			Density = density;
-            GrassData = new(data, Density);
+            GrassData = new(data, Density, grassCount, Index.GetHashCode());
             TreesData = new(data, Density, Index.GetHashCode());
 			_subDivs = 1 << density;
 			_data = data;
