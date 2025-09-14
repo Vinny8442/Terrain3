@@ -16,6 +16,7 @@ namespace Game.Ground
 		public int Density { get; private set; }
 		public int SubDivs { get; private set; }
 		public SectorData Data { get; private set; }
+        public Vector3 Size => _groundView.transform.localScale;
 
 		public bool Interactable { get; private set; }
 		private bool _isCentral = false;
@@ -73,6 +74,5 @@ namespace Game.Ground
 				_treesView.ClearTrees();
 			}
         }
-
-	}
+    }
 }

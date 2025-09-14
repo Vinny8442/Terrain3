@@ -8,7 +8,6 @@ namespace Game.Ground
 {
 	public class SectorControlService : IInitable
 	{
-		private static readonly Vector2 SectorSize = Vector2.one;
 		private const int Radius = 3;
 
 		private readonly SettingsStorage _settings;

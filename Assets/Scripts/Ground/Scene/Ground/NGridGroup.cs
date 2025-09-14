@@ -13,8 +13,9 @@ namespace Game.Ground
 {
     public class NGridGroup : MonoBehaviour, IInjectable, IInitable, ICoroutineRunner
     {
-        private static readonly Vector2 SectorSize = Vector2.one;
-        private readonly List<SectorView> _sectors = new List<SectorView>( );
+        [SerializeField] private SectorView _sectorPrefab;
+
+        private readonly List<SectorView> _sectors = new( );
         private Index2 _centerSector;
         private Vector2 _offset;
 
@@ -87,7 +88,7 @@ namespace Game.Ground
                 }
             }
 
-            transform.localPosition = new Vector3( _centerSector.x * 100, 0, _centerSector.y * 100 );
+            transform.localPosition = new Vector3( _centerSector.x * _sectorPrefab.Size.x, 0, _centerSector.y * _sectorPrefab.Size.z );
             SetSubComponentsPosition( );
 
             // var timer = Stopwatch.StartNew( );
@@ -146,7 +147,7 @@ namespace Game.Ground
         {
             foreach ( var index in EnumerateIndexes( ) )
             {
-                var grid = _prefabStorage.InstantiateAs<SectorView>( "SectorView", transform );
+                var grid = _prefabStorage.InstantiateAs<SectorView>(_sectorPrefab.gameObject, transform);
                 grid.name = $"SectorView({index.x}, {index.y})";
                 grid.SetIndex( index );
                 _sectors.Add( grid );
